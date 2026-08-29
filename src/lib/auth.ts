@@ -18,6 +18,14 @@ export const auth = betterAuth({
         transaction: true,
     }),
     emailVerification: { expiresIn: 60 * 5 },
+    account: {
+        storeStateStrategy: "database",
+        accountLinking: {
+            enabled: true,
+            allowDifferentEmails: false,
+            trustedProviders: ["google", "github", "discord", "email-password"],
+        },
+    },
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
