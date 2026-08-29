@@ -8,7 +8,9 @@
         "start": "next start",
         "lint": "biome check",
         "format": "biome format --write",
-        "prepare": "husky"
+        "prepare": "husky",
+        "db:up": "sudo docker compose up -d",
+        "db:down": "sudo docker compose down"
     },
     "dependencies": {
         "next": "16.3.3",
