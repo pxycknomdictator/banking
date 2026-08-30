@@ -5,6 +5,7 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, lastLoginMethod, twoFactor } from "better-auth/plugins";
 import { db } from "@/db";
+import { sendEmail } from "@/lib/email";
 import { redis } from "@/lib/redis";
 
 export const auth = betterAuth({
@@ -15,13 +16,30 @@ export const auth = betterAuth({
         enabled: true,
         resetPasswordTokenExpiresIn: 60 * 5,
         revokeSessionsOnPasswordReset: true,
+        async sendResetPassword({ user, url }) {
+            void sendEmail({
+                to: user.email,
+                subject: "Reset your password",
+                html: `Click the link to reset your password: ${url}`,
+            });
+        },
     },
     database: drizzleAdapter(db, {
         provider: "pg",
         usePlural: true,
         transaction: true,
     }),
-    emailVerification: { expiresIn: 60 * 5 },
+    emailVerification: {
+        expiresIn: 60 * 5,
+        sendOnSignUp: true,
+        async sendVerificationEmail({ user, url }) {
+            void sendEmail({
+                to: user.email,
+                subject: "Verify your email address",
+                html: `Click the link to verify your email: ${url}`,
+            });
+        },
+    },
     account: {
         storeStateStrategy: "database",
         accountLinking: {
@@ -76,7 +94,18 @@ export const auth = betterAuth({
         twoFactor({
             issuer: "Banking",
             trustDeviceMaxAge: 60 * 60 * 24 * 30,
-            otpOptions: { digits: 6, period: 3, storeOTP: "encrypted" },
+            otpOptions: {
+                digits: 6,
+                period: 3,
+                storeOTP: "encrypted",
+                async sendOTP({ user, otp }) {
+                    void sendEmail({
+                        to: user.email,
+                        subject: "Two Factor verification",
+                        html: `Your two-factor authentication code is: ${otp}`,
+                    });
+                },
+            },
             totpOptions: { digits: 6, period: 30 },
             backupCodeOptions: {
                 amount: 10,
