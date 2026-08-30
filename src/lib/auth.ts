@@ -1,7 +1,9 @@
+import { redisStorage } from "@better-auth/redis-storage";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { db } from "@/db";
+import { redis } from "@/lib/redis";
 
 export const auth = betterAuth({
     appName: "banking",
@@ -27,6 +29,10 @@ export const auth = betterAuth({
         },
     },
     verification: { storeIdentifier: "hashed", storeInDatabase: false },
+    secondaryStorage: redisStorage({
+        client: redis,
+        keyPrefix: "banking:",
+    }),
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
