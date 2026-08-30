@@ -53,6 +53,12 @@ export const auth = betterAuth({
         client: redis,
         keyPrefix: "banking:",
     }),
+    rateLimit: {
+        enabled: true,
+        window: 60,
+        max: 100,
+        storage: "secondary-storage",
+    },
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
