@@ -1,3 +1,4 @@
+import { passkeyClient } from "@better-auth/passkey/client";
 import {
     adminClient,
     lastLoginMethodClient,
@@ -11,5 +12,6 @@ export const authClient = createAuthClient({
         adminClient(),
         lastLoginMethodClient({ cookieName: "banking.last_used_login_method" }),
         twoFactorClient(),
+        passkeyClient(),
     ],
 });

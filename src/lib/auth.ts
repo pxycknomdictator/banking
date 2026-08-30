@@ -1,3 +1,4 @@
+import { passkey } from "@better-auth/passkey";
 import { redisStorage } from "@better-auth/redis-storage";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
@@ -82,6 +83,12 @@ export const auth = betterAuth({
                 length: 10,
                 storeBackupCodes: "encrypted",
             },
+        }),
+        passkey({
+            rpID: "localhost",
+            rpName: "Banking",
+            origin: process.env.APPLICATION_URL,
+            registration: { requireSession: true },
         }),
         nextCookies(),
     ],
