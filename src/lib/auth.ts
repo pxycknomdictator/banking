@@ -58,6 +58,12 @@ export const auth = betterAuth({
         disableCSRFCheck: false,
         useSecureCookies: true,
     },
+    session: {
+        expiresIn: 60 * 60 * 24,
+        updateAge: 60 * 60,
+        preserveSessionInDatabase: false,
+        storeSessionInDatabase: true,
+    },
     rateLimit: {
         enabled: true,
         window: 60,
