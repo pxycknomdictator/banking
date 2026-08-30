@@ -2,6 +2,7 @@ import { redisStorage } from "@better-auth/redis-storage";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { admin, lastLoginMethod } from "better-auth/plugins";
 import { db } from "@/db";
 import { redis } from "@/lib/redis";
 
@@ -65,5 +66,12 @@ export const auth = betterAuth({
             }),
         },
     },
-    plugins: [nextCookies()],
+    plugins: [
+        admin(),
+        lastLoginMethod({
+            storeInDatabase: false,
+            cookieName: "banking.last_used_login_method",
+        }),
+        nextCookies(),
+    ],
 });
