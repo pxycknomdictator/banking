@@ -53,6 +53,11 @@ export const auth = betterAuth({
         client: redis,
         keyPrefix: "banking:",
     }),
+    advanced: {
+        cookiePrefix: "banking",
+        disableCSRFCheck: false,
+        useSecureCookies: true,
+    },
     rateLimit: {
         enabled: true,
         window: 60,
