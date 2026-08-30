@@ -26,6 +26,7 @@ export const auth = betterAuth({
             trustedProviders: ["google", "github", "discord", "email-password"],
         },
     },
+    verification: { storeIdentifier: "hashed", storeInDatabase: false },
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
