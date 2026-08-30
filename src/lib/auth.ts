@@ -2,7 +2,7 @@ import { redisStorage } from "@better-auth/redis-storage";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { admin, lastLoginMethod } from "better-auth/plugins";
+import { admin, lastLoginMethod, twoFactor } from "better-auth/plugins";
 import { db } from "@/db";
 import { redis } from "@/lib/redis";
 
@@ -71,6 +71,17 @@ export const auth = betterAuth({
         lastLoginMethod({
             storeInDatabase: false,
             cookieName: "banking.last_used_login_method",
+        }),
+        twoFactor({
+            issuer: "Banking",
+            trustDeviceMaxAge: 60 * 60 * 24 * 30,
+            otpOptions: { digits: 6, period: 3, storeOTP: "encrypted" },
+            totpOptions: { digits: 6, period: 30 },
+            backupCodeOptions: {
+                amount: 10,
+                length: 10,
+                storeBackupCodes: "encrypted",
+            },
         }),
         nextCookies(),
     ],
