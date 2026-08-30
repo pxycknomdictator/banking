@@ -64,6 +64,29 @@ export const auth = betterAuth({
         preserveSessionInDatabase: false,
         storeSessionInDatabase: true,
     },
+    user: {
+        changeEmail: {
+            enabled: true,
+            updateEmailWithoutVerification: false,
+            async sendChangeEmailConfirmation({ user, newEmail, url }) {
+                void sendEmail({
+                    to: user.email,
+                    subject: "Confirm your email change",
+                    html: `Hi ${user.name}, you requested to change your email to ${newEmail}. Confirm it here: ${url}. If you didn't request this, you can ignore this email.`,
+                });
+            },
+        },
+        deleteUser: {
+            enabled: true,
+            async sendDeleteAccountVerification({ user, url }) {
+                void sendEmail({
+                    to: user.email,
+                    subject: "Confirm account deletion",
+                    html: `Hi ${user.name}, you requested to delete your account. Confirm it here: ${url}. If you didn't request this, you can ignore this email.`,
+                });
+            },
+        },
+    },
     rateLimit: {
         enabled: true,
         window: 60,
