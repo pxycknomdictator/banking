@@ -3,10 +3,15 @@ import { redisStorage } from "@better-auth/redis-storage";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { admin, lastLoginMethod, twoFactor } from "better-auth/plugins";
+import {
+    admin as adminPlugin,
+    lastLoginMethod,
+    twoFactor,
+} from "better-auth/plugins";
 import { db } from "@/db";
 import { sendEmail } from "@/lib/email";
 import { passwords } from "@/lib/password";
+import { ac, admin, user } from "@/lib/permissions";
 import { redis } from "@/lib/redis";
 
 export const auth = betterAuth({
@@ -194,7 +199,12 @@ export const auth = betterAuth({
         },
     },
     plugins: [
-        admin(),
+        adminPlugin({
+            ac,
+            roles: { admin, user },
+            defaultRole: "user",
+            adminRoles: ["admin"],
+        }),
         lastLoginMethod({
             storeInDatabase: false,
             cookieName: "banking.last_used_login_method",
