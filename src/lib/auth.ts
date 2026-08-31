@@ -6,6 +6,7 @@ import { nextCookies } from "better-auth/next-js";
 import { admin, lastLoginMethod, twoFactor } from "better-auth/plugins";
 import { db } from "@/db";
 import { sendEmail } from "@/lib/email";
+import { passwords } from "@/lib/password";
 import { redis } from "@/lib/redis";
 
 export const auth = betterAuth({
@@ -22,6 +23,14 @@ export const auth = betterAuth({
                 subject: "Reset your password",
                 html: `Click the link to reset your password: ${url}`,
             });
+        },
+        password: {
+            async hash(password) {
+                return await passwords.hash(password);
+            },
+            async verify({ hash, password }) {
+                return await passwords.verify(hash, password);
+            },
         },
     },
     database: drizzleAdapter(db, {
