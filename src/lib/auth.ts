@@ -92,6 +92,7 @@ export const auth = betterAuth({
         },
         deleteUser: {
             enabled: true,
+            deleteTokenExpiresIn: 60 * 15,
             async sendDeleteAccountVerification({ user, url }) {
                 void sendEmail({
                     to: user.email,
