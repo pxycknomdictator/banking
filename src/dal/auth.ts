@@ -23,3 +23,9 @@ export async function verifiedSession(): Promise<GetSessionResponse> {
     if (!session.user.emailVerified) redirect("/verify-email");
     return session;
 }
+
+export async function adminSession(): Promise<GetSessionResponse> {
+    const session = await verifiedSession();
+    if (session.user.role !== "admin") redirect("/unauthorized");
+    return session;
+}
