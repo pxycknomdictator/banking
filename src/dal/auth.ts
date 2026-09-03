@@ -18,6 +18,15 @@ export async function userSession(): Promise<GetSessionResponse> {
     return session;
 }
 
+export async function unverifiedSession(): Promise<GetSessionResponse> {
+    const session = await userSession();
+    if (session.user.emailVerified) {
+        if (session.user.role === "admin") redirect("/admin/dashboard");
+        else redirect("/dashboard");
+    }
+    return session;
+}
+
 export async function verifiedSession(): Promise<GetSessionResponse> {
     const session = await userSession();
     if (!session.user.emailVerified) redirect("/verify-email");
