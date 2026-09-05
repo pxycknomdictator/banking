@@ -1,5 +1,8 @@
+import { twoFactorSession } from "@/dal/auth";
 import { OTPForm } from "@/features/auth/components/forms/OTPForm";
 
-export default function OTPVerifyPage() {
+export default async function OTPVerifyPage() {
+    await twoFactorSession();
+
     return <OTPForm />;
 }
