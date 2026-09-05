@@ -7,6 +7,11 @@ type GetSessionResponse = {
     session: BetterAuthSession;
 };
 
+export function redirectToDashboard(user: BetterAuthUser): void {
+    if (user.role === "admin") redirect("/admin/dashboard");
+    else redirect("/dashboard");
+}
+
 export async function getSession(): Promise<GetSessionResponse | null> {
     const session = await auth.api.getSession({ headers: await headers() });
     return session;
@@ -22,18 +27,14 @@ export async function authSession(): Promise<GetSessionResponse | null> {
     const session = await getSession();
     if (session) {
         if (!session.user.emailVerified) redirect("/verify-email");
-        if (session.user.role === "admin") redirect("/admin/dashboard");
-        redirect("/dashboard");
+        redirectToDashboard(session.user);
     }
     return null;
 }
 
 export async function unverifiedSession(): Promise<GetSessionResponse> {
     const session = await userSession();
-    if (session.user.emailVerified) {
-        if (session.user.role === "admin") redirect("/admin/dashboard");
-        else redirect("/dashboard");
-    }
+    if (session.user.emailVerified) redirectToDashboard(session.user);
     return session;
 }
 
@@ -45,14 +46,9 @@ export async function verifiedSession(): Promise<GetSessionResponse> {
 
 export async function twoFactorSession(): Promise<GetSessionResponse> {
     const session = await verifiedSession();
-    const cookie = await cookies();
-    const token = cookie.get("better-auth.two_factor");
-
-    if (!token) {
-        if (session.user.role === "admin") redirect("/admin/dashboard");
-        else redirect("/dashboard");
-    }
-
+    const cookieStore = await cookies();
+    const token = cookieStore.get("__Secure-better-auth.two_factor");
+    if (!token) redirectToDashboard(session.user);
     return session;
 }
 
