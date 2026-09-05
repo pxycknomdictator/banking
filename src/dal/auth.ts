@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth, type BetterAuthSession, type BetterAuthUser } from "@/lib/auth";
 
@@ -40,6 +40,19 @@ export async function unverifiedSession(): Promise<GetSessionResponse> {
 export async function verifiedSession(): Promise<GetSessionResponse> {
     const session = await userSession();
     if (!session.user.emailVerified) redirect("/verify-email");
+    return session;
+}
+
+export async function twoFactorSession(): Promise<GetSessionResponse> {
+    const session = await verifiedSession();
+    const cookie = await cookies();
+    const token = cookie.get("better-auth.two_factor");
+
+    if (!token) {
+        if (session.user.role === "admin") redirect("/admin/dashboard");
+        else redirect("/dashboard");
+    }
+
     return session;
 }
 
