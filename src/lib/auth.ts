@@ -207,7 +207,7 @@ export const auth = betterAuth({
             adminRoles: ["admin"],
         }),
         lastLoginMethod({
-            storeInDatabase: false,
+            storeInDatabase: true,
             cookieName: "banking.last_used_login_method",
         }),
         twoFactor({

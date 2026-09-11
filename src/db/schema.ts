@@ -6,7 +6,6 @@ import {
     pgTable,
     text,
     timestamp,
-    uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 export const user = pgTable("user", {
@@ -24,6 +23,7 @@ export const user = pgTable("user", {
     banned: boolean("banned").default(false),
     banReason: text("ban_reason"),
     banExpires: timestamp("ban_expires"),
+    lastLoginMethod: text("last_login_method"),
     twoFactorEnabled: boolean("two_factor_enabled").default(false),
 });
 
@@ -51,7 +51,6 @@ export const account = pgTable(
     "account",
     {
         id: text("id").primaryKey(),
-        issuer: text("issuer").notNull(),
         accountId: text("account_id").notNull(),
         providerId: text("provider_id").notNull(),
         userId: text("user_id")
@@ -69,13 +68,7 @@ export const account = pgTable(
             .$onUpdate(() => new Date())
             .notNull(),
     },
-    (table) => [
-        uniqueIndex("account_issuer_accountId_uidx").on(
-            table.issuer,
-            table.accountId,
-        ),
-        index("account_userId_idx").on(table.userId),
-    ],
+    (table) => [index("account_userId_idx").on(table.userId)],
 );
 
 export const twoFactor = pgTable(
