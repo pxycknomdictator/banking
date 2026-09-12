@@ -15,7 +15,7 @@ export function SocialProviders() {
     ];
 
     return (
-        <section className="grid grid-cols-1 gap-y-4 md:grid-cols-3 gap-x-4">
+        <section className="w-full grid grid-cols-1 mb-2 gap-y-4 md:grid-cols-3 gap-x-4">
             {socialProviderList.map(({ id, text, src }) => (
                 <Button
                     key={id}
