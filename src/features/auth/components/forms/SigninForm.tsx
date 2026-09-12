@@ -3,13 +3,8 @@
 import { Fingerprint } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { FormHeader } from "@/features/auth/components/FormHeader";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
 import { SocialProviders } from "@/features/auth/components/SocialProviders";
 
@@ -17,8 +12,10 @@ export function SigninForm() {
     return (
         <FormWrapper>
             <CardHeader>
-                <CardTitle>Sign in form</CardTitle>
-                <CardDescription></CardDescription>
+                <FormHeader
+                    title="Sign in form"
+                    description="Enter your credentials"
+                />
             </CardHeader>
             <CardContent></CardContent>
             <CardFooter>
