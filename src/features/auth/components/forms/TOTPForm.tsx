@@ -1,15 +1,18 @@
 "use client";
 
+import { Smartphone } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { FormHeader } from "@/features/auth/components/FormHeader";
+import { FormRoundBadge } from "@/features/auth/components/FormRoundBadge";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
 
 export function TOTPForm() {
     return (
         <FormWrapper>
             <CardHeader>
+                <FormRoundBadge Lucide={Smartphone} />
                 <FormHeader
                     title="TOTP form"
                     description="Enter your credentials"

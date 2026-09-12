@@ -1,15 +1,18 @@
 "use client";
 
+import { ShieldLock } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { FormHeader } from "@/features/auth/components/FormHeader";
+import { FormRoundBadge } from "@/features/auth/components/FormRoundBadge";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
 
 export function RecoveryForm() {
     return (
         <FormWrapper>
             <CardHeader>
+                <FormRoundBadge Lucide={ShieldLock} />
                 <FormHeader
                     title="Recovery form"
                     description="Enter your credentials"

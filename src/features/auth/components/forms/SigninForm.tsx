@@ -1,10 +1,11 @@
 "use client";
 
-import { Fingerprint } from "lucide-react";
+import { Fingerprint, LogIn } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { FormHeader } from "@/features/auth/components/FormHeader";
+import { FormRoundBadge } from "@/features/auth/components/FormRoundBadge";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
 import { SocialProviders } from "@/features/auth/components/SocialProviders";
 
@@ -12,6 +13,7 @@ export function SigninForm() {
     return (
         <FormWrapper>
             <CardHeader>
+                <FormRoundBadge Lucide={LogIn} />
                 <FormHeader
                     title="Sign in form"
                     description="Enter your credentials"

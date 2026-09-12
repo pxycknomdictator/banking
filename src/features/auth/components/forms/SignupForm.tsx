@@ -1,9 +1,11 @@
 "use client";
 
+import { UserPlus2Icon } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { FormHeader } from "@/features/auth/components/FormHeader";
+import { FormRoundBadge } from "@/features/auth/components/FormRoundBadge";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
 import { SocialProviders } from "@/features/auth/components/SocialProviders";
 
@@ -11,6 +13,7 @@ export function SignupForm() {
     return (
         <FormWrapper>
             <CardHeader>
+                <FormRoundBadge Lucide={UserPlus2Icon} />
                 <FormHeader
                     title="Sign up form"
                     description="Enter your credentials"
