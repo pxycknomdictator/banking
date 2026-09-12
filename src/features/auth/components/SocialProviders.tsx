@@ -19,6 +19,7 @@ export function SocialProviders() {
             {socialProviderList.map(({ id, text, src }) => (
                 <Button
                     key={id}
+                    type="button"
                     variant={"outline"}
                     className="py-7 space-x-1 disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
                 >
