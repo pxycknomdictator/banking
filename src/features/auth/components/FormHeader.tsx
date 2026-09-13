@@ -8,8 +8,12 @@ type FormHeaderProps = {
 export function FormHeader({ title, description }: FormHeaderProps) {
     return (
         <>
-            <CardTitle>{title}</CardTitle>
-            <CardDescription>{description}</CardDescription>
+            <CardTitle className="leading-5.5 text-xl text-center">
+                {title}
+            </CardTitle>
+            <CardDescription className="text-center">
+                {description}
+            </CardDescription>
         </>
     );
 }
