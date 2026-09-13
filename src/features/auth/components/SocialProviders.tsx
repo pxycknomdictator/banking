@@ -1,8 +1,13 @@
+"use client";
+
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 export function SocialProviders() {
+    const pathname = usePathname();
+
     type SocialProviderList = {
         id: "google" | "github" | "discord";
         text: "Google" | "Github" | "Discord";
@@ -24,12 +29,14 @@ export function SocialProviders() {
                     variant={"outline"}
                     className="relative py-7 space-x-1 disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
                 >
-                    <Badge
-                        variant="default"
-                        className="absolute -top-2.5 -right-3 font-semibold md:font-medium"
-                    >
-                        Last used
-                    </Badge>
+                    {pathname === "/sign-in" && (
+                        <Badge
+                            variant="default"
+                            className="absolute -top-2.5 -right-3 font-semibold md:font-medium"
+                        >
+                            Last used
+                        </Badge>
+                    )}
                     <Image src={src} alt={id} width={25} height={25} />
                     <span className="block font-semibold lg:font-medium">
                         {text}
