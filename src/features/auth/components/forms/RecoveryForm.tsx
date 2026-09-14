@@ -44,6 +44,7 @@ export function RecoveryForm() {
                     <Button
                         type="submit"
                         variant={"default"}
+                        form="two-factor-recovery-code-form"
                         className="py-7 w-full font-semibold disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
                     >
                         Verify code

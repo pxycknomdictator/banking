@@ -44,6 +44,7 @@ export function OTPForm() {
                     <Button
                         type="submit"
                         variant={"default"}
+                        form="two-factor-otp-form"
                         className="py-7 w-full font-semibold disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
                     >
                         Verify OTP

@@ -44,6 +44,7 @@ export function ForgotPasswordForm() {
                     <Button
                         type="submit"
                         variant={"default"}
+                        form="forgot-password-form"
                         className="py-7 w-full font-semibold disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
                     >
                         Reset password

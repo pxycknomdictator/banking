@@ -47,6 +47,7 @@ export function SignupForm() {
                     <Button
                         type="submit"
                         variant={"default"}
+                        form="signup-form"
                         className="py-7 w-full font-semibold disabled:opacity-45 disabled:cursor-not-allowed cursor-pointer"
                     >
                         Sign up
