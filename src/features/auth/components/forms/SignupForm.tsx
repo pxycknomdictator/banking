@@ -13,7 +13,7 @@ import { SocialProviders } from "@/features/auth/components/SocialProviders";
 import { type SignUpSchema, signUpSchema } from "@/features/auth/validation";
 
 export function SignupForm() {
-    useForm<SignUpSchema>({
+    const form = useForm<SignUpSchema>({
         resolver: zodResolver(signUpSchema),
         defaultValues: {
             name: "",
@@ -22,6 +22,10 @@ export function SignupForm() {
             confirmPassword: "",
         },
     });
+
+    async function onSubmit({ name, email, password }: SignUpSchema) {
+        console.log({ name, email, password });
+    }
 
     return (
         <FormWrapper>
@@ -32,7 +36,12 @@ export function SignupForm() {
                     description="Enter your credentials"
                 />
             </CardHeader>
-            <CardContent></CardContent>
+            <CardContent>
+                <form
+                    id="signup-form"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                ></form>
+            </CardContent>
             <CardFooter>
                 <div className="w-full space-y-5.5">
                     <Button

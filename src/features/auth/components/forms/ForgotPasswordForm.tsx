@@ -15,10 +15,14 @@ import {
 } from "@/features/auth/validation";
 
 export function ForgotPasswordForm() {
-    useForm<ForgotPasswordSchema>({
+    const form = useForm<ForgotPasswordSchema>({
         resolver: zodResolver(forgotPasswordSchema),
         defaultValues: { email: "" },
     });
+
+    async function onSubmit({ email }: ForgotPasswordSchema) {
+        console.log({ email });
+    }
 
     return (
         <FormWrapper>
@@ -29,7 +33,12 @@ export function ForgotPasswordForm() {
                     description="Enter your credentials"
                 />
             </CardHeader>
-            <CardContent></CardContent>
+            <CardContent>
+                <form
+                    id="forgot-password-form"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                ></form>
+            </CardContent>
             <CardFooter>
                 <div className="w-full space-y-5.5">
                     <Button

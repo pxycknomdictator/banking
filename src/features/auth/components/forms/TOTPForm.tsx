@@ -15,10 +15,14 @@ import {
 } from "@/features/auth/validation";
 
 export function TOTPForm() {
-    useForm<TwoFactorTOTPSchema>({
+    const form = useForm<TwoFactorTOTPSchema>({
         resolver: zodResolver(twoFactorTOTPSchema),
         defaultValues: { code: "", trustDevice: false },
     });
+
+    async function onSubmit({ code, trustDevice }: TwoFactorTOTPSchema) {
+        console.log({ code, trustDevice });
+    }
 
     return (
         <FormWrapper>
@@ -29,7 +33,12 @@ export function TOTPForm() {
                     description="Enter your credentials"
                 />
             </CardHeader>
-            <CardContent></CardContent>
+            <CardContent>
+                <form
+                    id="two-factor-totp-form"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                ></form>
+            </CardContent>
             <CardFooter>
                 <div className="w-full space-y-5.5">
                     <Button

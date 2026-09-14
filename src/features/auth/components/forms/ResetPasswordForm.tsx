@@ -15,10 +15,14 @@ import {
 } from "@/features/auth/validation";
 
 export function ResetPasswordForm() {
-    useForm<ResetPasswordSchema>({
+    const form = useForm<ResetPasswordSchema>({
         resolver: zodResolver(resetPasswordSchema),
         defaultValues: { newPassword: "", confirmPassword: "", token: "" },
     });
+
+    async function onSubmit({ newPassword, token }: ResetPasswordSchema) {
+        console.log({ newPassword, token });
+    }
 
     return (
         <FormWrapper>
@@ -29,7 +33,12 @@ export function ResetPasswordForm() {
                     description="Enter your credentials"
                 />
             </CardHeader>
-            <CardContent></CardContent>
+            <CardContent>
+                <form
+                    id="reset-password-form"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                ></form>
+            </CardContent>
             <CardFooter>
                 <div className="w-full space-y-5.5">
                     <Button

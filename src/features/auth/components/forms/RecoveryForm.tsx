@@ -15,10 +15,14 @@ import {
 } from "@/features/auth/validation";
 
 export function RecoveryForm() {
-    useForm<RecoveryCodeSchema>({
+    const form = useForm<RecoveryCodeSchema>({
         resolver: zodResolver(recoveryCodeSchema),
         defaultValues: { code: "", trustDevice: false },
     });
+
+    async function onSubmit({ code, trustDevice }: RecoveryCodeSchema) {
+        console.log({ code, trustDevice });
+    }
 
     return (
         <FormWrapper>
@@ -29,7 +33,12 @@ export function RecoveryForm() {
                     description="Enter your credentials"
                 />
             </CardHeader>
-            <CardContent></CardContent>
+            <CardContent>
+                <form
+                    id="two-factor-recovery-code-form"
+                    onSubmit={form.handleSubmit(onSubmit)}
+                ></form>
+            </CardContent>
             <CardFooter>
                 <div className="w-full space-y-5.5">
                     <Button
