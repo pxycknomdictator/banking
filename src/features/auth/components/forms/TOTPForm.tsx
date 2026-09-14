@@ -1,14 +1,25 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Smartphone } from "lucide-react";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { FormHeader } from "@/features/auth/components/FormHeader";
 import { FormRoundBadge } from "@/features/auth/components/FormRoundBadge";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
+import {
+    type TwoFactorTOTPSchema,
+    twoFactorTOTPSchema,
+} from "@/features/auth/validation";
 
 export function TOTPForm() {
+    useForm<TwoFactorTOTPSchema>({
+        resolver: zodResolver(twoFactorTOTPSchema),
+        defaultValues: { code: "", trustDevice: false },
+    });
+
     return (
         <FormWrapper>
             <CardHeader>

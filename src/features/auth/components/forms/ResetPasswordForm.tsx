@@ -1,14 +1,25 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
 import { UserRoundPen } from "lucide-react";
 import Link from "next/link";
+import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { FormHeader } from "@/features/auth/components/FormHeader";
 import { FormRoundBadge } from "@/features/auth/components/FormRoundBadge";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
+import {
+    type ResetPasswordSchema,
+    resetPasswordSchema,
+} from "@/features/auth/validation";
 
 export function ResetPasswordForm() {
+    useForm<ResetPasswordSchema>({
+        resolver: zodResolver(resetPasswordSchema),
+        defaultValues: { newPassword: "", confirmPassword: "", token: "" },
+    });
+
     return (
         <FormWrapper>
             <CardHeader>
