@@ -1,0 +1,12 @@
+.next/
+node_modules/
+public/
+.env*
+.gitignore
+.bun.lock
+next-env.d.ts
+drizzle
+output
+dist
+migration
+src/components/ui
