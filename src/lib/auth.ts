@@ -24,5 +24,12 @@ export const auth = betterAuth({
         usePlural: true,
         transaction: true
     }),
+    account: {
+        accountLinking: {
+            enabled: true,
+            allowDifferentEmails: false,
+            trustedProviders: ["google", "github", "discord", "email-password"]
+        }
+    },
     plugins: [nextCookies()]
 });
