@@ -29,7 +29,7 @@ export const auth = betterAuth({
             void sendEmail({
                 to: user.email,
                 subject: "Reset your password",
-                html: `Click the link to reset your password: ${url}`
+                html: `You requested to reset your password. Click here to continue: ${url}`
             });
         }
     },
@@ -41,7 +41,7 @@ export const auth = betterAuth({
             void sendEmail({
                 to: user.email,
                 subject: "Verify your email address",
-                html: `Click the link to verify your email: ${url}`
+                html: `Please verify your email address by clicking here: ${url}`
             });
         }
     },
@@ -67,6 +67,30 @@ export const auth = betterAuth({
         preserveSessionInDatabase: false
     },
     verification: { storeIdentifier: "hashed", storeInDatabase: true },
+    user: {
+        changeEmail: {
+            enabled: true,
+            updateEmailWithoutVerification: false,
+            async sendChangeEmailConfirmation({ user, newEmail, url }) {
+                void sendEmail({
+                    to: user.email,
+                    subject: "Confirm your new email address",
+                    html: `You requested to change your email address to ${newEmail}. Click here to confirm: ${url}`
+                });
+            }
+        },
+        deleteUser: {
+            enabled: true,
+            deleteTokenExpiresIn: 60 * 5,
+            async sendDeleteAccountVerification({ user, url }) {
+                void sendEmail({
+                    to: user.email,
+                    subject: "Confirm your account deletion",
+                    html: `You requested to delete your account. Click here to confirm: ${url}`
+                });
+            }
+        }
+    },
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
