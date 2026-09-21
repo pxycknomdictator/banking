@@ -42,6 +42,7 @@ export const auth = betterAuth({
         storeSessionInDatabase: true,
         preserveSessionInDatabase: false
     },
+    verification: { storeIdentifier: "hashed", storeInDatabase: true },
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
