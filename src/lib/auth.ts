@@ -68,6 +68,14 @@ export const auth = betterAuth({
     },
     verification: { storeIdentifier: "hashed", storeInDatabase: true },
     user: {
+        additionalFields: {
+            role: {
+                input: false,
+                required: false,
+                defaultValue: "user",
+                type: ["user", "admin"]
+            }
+        },
         changeEmail: {
             enabled: true,
             updateEmailWithoutVerification: false,
@@ -105,5 +113,13 @@ export const auth = betterAuth({
             clientSecret: process.env.DISCORD_CLIENT_SECRET as string
         }
     },
-    plugins: [admin(), twoFactor(), lastLoginMethod(), nextCookies()]
+    plugins: [
+        admin({ adminRoles: ["admin"], defaultRole: "user" }),
+        twoFactor(),
+        lastLoginMethod(),
+        nextCookies()
+    ]
 });
+
+export type BetterAuthUser = typeof auth.$Infer.Session.user;
+export type BetterAuthSession = typeof auth.$Infer.Session.session;
