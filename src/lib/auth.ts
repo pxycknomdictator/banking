@@ -22,6 +22,7 @@ export const auth = betterAuth({
                 return await passwords.verify(hash, password);
             }
         },
+        requireEmailVerification: true,
         resetPasswordTokenExpiresIn: 60 * 5,
         revokeSessionsOnPasswordReset: true,
         async sendResetPassword({ user, url }) {
@@ -29,6 +30,18 @@ export const auth = betterAuth({
                 to: user.email,
                 subject: "Reset your password",
                 html: `Click the link to reset your password: ${url}`
+            });
+        }
+    },
+    emailVerification: {
+        expiresIn: 60 * 5,
+        sendOnSignUp: true,
+        autoSignInAfterVerification: true,
+        async sendVerificationEmail({ user, url }) {
+            void sendEmail({
+                to: user.email,
+                subject: "Verify your email address",
+                html: `Click the link to verify your email: ${url}`
             });
         }
     },
