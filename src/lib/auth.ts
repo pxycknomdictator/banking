@@ -37,6 +37,11 @@ export const auth = betterAuth({
         client: redis,
         keyPrefix: "better-auth:"
     }),
+    session: {
+        expiresIn: 60 * 60 * 24,
+        storeSessionInDatabase: true,
+        preserveSessionInDatabase: false
+    },
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
