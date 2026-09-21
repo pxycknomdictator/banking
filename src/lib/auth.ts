@@ -1,4 +1,5 @@
 import { db } from "@/db";
+import { sendEmail } from "@/lib/email";
 import { passwords } from "@/lib/passwords";
 import { redis } from "@/lib/redis";
 import { redisStorage } from "@better-auth/redis-storage";
@@ -20,6 +21,15 @@ export const auth = betterAuth({
             async verify({ hash, password }) {
                 return await passwords.verify(hash, password);
             }
+        },
+        resetPasswordTokenExpiresIn: 60 * 5,
+        revokeSessionsOnPasswordReset: true,
+        async sendResetPassword({ user, url }) {
+            void sendEmail({
+                to: user.email,
+                subject: "Reset your password",
+                html: `Click the link to reset your password: ${url}`
+            });
         }
     },
     database: drizzleAdapter(db, {
