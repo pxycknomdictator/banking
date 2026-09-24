@@ -4,6 +4,7 @@ import { passwords } from "@/lib/passwords";
 import { redis } from "@/lib/redis";
 import { redisStorage } from "@better-auth/redis-storage";
 import { betterAuth } from "better-auth";
+import { passkey } from "@better-auth/passkey";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, lastLoginMethod, twoFactor } from "better-auth/plugins";
@@ -117,6 +118,7 @@ export const auth = betterAuth({
         admin({ adminRoles: ["admin"], defaultRole: "user" }),
         twoFactor(),
         lastLoginMethod(),
+        passkey(),
         nextCookies()
     ]
 });
