@@ -1,4 +1,7 @@
-export default function Dashboard() {
+import { verifiedSession } from "@/dal/auth";
+
+export default async function Dashboard() {
+    await verifiedSession();
     return (
         <div className="p-4">
             <h1 className="text-2xl font-medium">Dashboard page</h1>
