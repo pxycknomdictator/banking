@@ -33,3 +33,12 @@ export async function unverifiedSession(): Promise<SessionResponse> {
     }
     return session;
 }
+
+export async function checkTwoFactorAuth(): Promise<SessionResponse> {
+    const session = await verifiedSession();
+    if (!session.user.twoFactorEnabled) {
+        if (session.user.role !== "admin") redirect("/dashboard");
+        else redirect("/admin/dashboard");
+    }
+    return session;
+}
