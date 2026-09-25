@@ -3,9 +3,13 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Loader } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
 export function SocialProviders() {
+    const pathname = usePathname();
+
     type SocialProvider = "google" | "github" | "discord";
 
     type SocialProviderList = {
@@ -37,10 +41,21 @@ export function SocialProviders() {
                     variant={"outline"}
                     disabled={socialProvider !== null}
                     onClick={() => signInWithSocialProvider(id)}
-                    className="font-semibold md:font-medium py-6.75 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 gap-x-2"
+                    className="font-semibold md:font-medium py-6.75 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 gap-x-2 relative"
                 >
+                    {pathname === "/sign-in" && (
+                        <Badge className="absolute -top-2.75 -right-2 font-medium">
+                            Last used
+                        </Badge>
+                    )}
                     {socialProvider !== id ? (
-                        <Image src={URL} alt={id} width={22} height={22} />
+                        <Image
+                            src={URL}
+                            alt={id}
+                            width={22}
+                            height={22}
+                            className="w-5.5 h-auto"
+                        />
                     ) : (
                         <Loader
                             style={{ width: 22, height: 22 }}
