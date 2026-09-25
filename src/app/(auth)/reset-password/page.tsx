@@ -1,7 +1,9 @@
+import { ResetPasswordForm } from "@/features/auth/components/forms/ResetPasswordForm";
+
 export default function ResetPassword() {
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-medium">Reset password page</h1>
+            <ResetPasswordForm />
         </div>
     );
 }

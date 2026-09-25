@@ -1,10 +1,11 @@
 import { checkTwoFactorAuth } from "@/dal/auth";
+import { TwoFactorTOTPForm } from "@/features/auth/components/forms/TwoFactorTOTPForm";
 
 export default async function TOTPVerify() {
     await checkTwoFactorAuth();
     return (
         <div className="p-4">
-            <h1 className="text-2xl font-medium">TOTP Verify page</h1>
+            <TwoFactorTOTPForm />
         </div>
     );
 }
