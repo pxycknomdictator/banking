@@ -1,13 +1,16 @@
 "use client";
 
-import { CardFooter } from "@/components/ui/card";
+import { CardFooter, CardHeader } from "@/components/ui/card";
+import { FormHeader } from "@/features/auth/components/FormHeader";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
 import { SocialProviders } from "@/features/auth/components/SocialProviders";
 
 export function SignupForm() {
     return (
         <FormWrapper>
-            <h1 className="text-2xl font-medium">Signup form</h1>
+            <CardHeader>
+                <FormHeader title="Signup form" description="" />
+            </CardHeader>
             <CardFooter>
                 <SocialProviders />
             </CardFooter>
