@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { CardFooter, CardHeader } from "@/components/ui/card";
 import { FormHeader } from "@/features/auth/components/FormHeader";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
@@ -12,7 +13,18 @@ export function SigninForm() {
                 <FormHeader title="Signin form" description="" />
             </CardHeader>
             <CardFooter>
-                <SocialProviders />
+                <section className="w-full">
+                    <div className="text-center my-4">
+                        Don't have an account?{" "}
+                        <Link
+                            href={"/sign-up"}
+                            className="hover:underline font-medium"
+                        >
+                            Sign up
+                        </Link>
+                    </div>
+                    <SocialProviders />
+                </section>
             </CardFooter>
         </FormWrapper>
     );
