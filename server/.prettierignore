@@ -1,0 +1,8 @@
+node_modules/
+public/
+.env*
+bun.lock
+dist/
+build/
+migrations
+drizzle

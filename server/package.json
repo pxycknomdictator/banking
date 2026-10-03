@@ -1,0 +1,28 @@
+{
+    "name": "server",
+    "version": "1.0.0",
+    "description": "",
+    "main": "src/main.js",
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch & node --watch --env-file=.env dist/main.js",
+        "start": "node --watch --env-file=.env dist/main.js",
+        "format": "prettier --write ."
+    },
+    "keywords": [],
+    "author": {
+        "name": "Noman",
+        "email": "pxycknomdictator@gmail.com"
+    },
+    "license": "ISC",
+    "type": "module",
+    "devDependencies": {
+        "@types/express": "^5.0.6",
+        "@types/node": "^26.6.4",
+        "prettier": "^3.9.9",
+        "typescript": "^7.0.2"
+    },
+    "dependencies": {
+        "express": "^5.2.1"
+    }
+}
