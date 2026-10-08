@@ -7,6 +7,7 @@ export const auth = betterAuth({
     appName: "banking",
     baseURL: process.env.BETTER_AUTH_URL,
     secret: process.env.BETTER_AUTH_SECRET,
+    verification: { storeIdentifier: "hashed", storeInDatabase: true },
     database: drizzleAdapter(db, { provider: "pg", usePlural: true }),
     emailAndPassword: { enabled: true },
     socialProviders: {
