@@ -3,6 +3,7 @@ import { redis } from "@lib/redis";
 import { passkey } from "@better-auth/passkey";
 import { redisStorage } from "@better-auth/redis-storage";
 import { betterAuth } from "better-auth";
+import { hash, verify } from "@lib/password";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { admin, lastLoginMethod, twoFactor } from "better-auth/plugins";
@@ -17,7 +18,15 @@ export const auth = betterAuth({
         client: redis,
         keyPrefix: "better-auth:"
     }),
-    emailAndPassword: { enabled: true },
+    emailAndPassword: {
+        enabled: true,
+        resetPasswordTokenExpiresIn: 60 * 5,
+        revokeSessionsOnPasswordReset: true,
+        password: {
+            hash: async (password) => await hash(password),
+            verify: async ({ hash, password }) => await verify(hash, password)
+        }
+    },
     account: {
         storeStateStrategy: "database",
         accountLinking: {
