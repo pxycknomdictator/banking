@@ -1,0 +1,10 @@
+.next
+node_modules
+public
+dist
+output
+drizzle
+migrations
+*.env
+bun.lock
+src/components/ui
