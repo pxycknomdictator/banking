@@ -12,6 +12,14 @@ export const auth = betterAuth({
     verification: { storeIdentifier: "hashed", storeInDatabase: true },
     database: drizzleAdapter(db, { provider: "pg", usePlural: true }),
     emailAndPassword: { enabled: true },
+    account: {
+        storeStateStrategy: "database",
+        accountLinking: {
+            enabled: true,
+            allowDifferentEmails: false,
+            trustedProviders: ["email-password", "google", "github", "discord"]
+        }
+    },
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
