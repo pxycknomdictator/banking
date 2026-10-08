@@ -7,7 +7,9 @@
         "build": "next build",
         "start": "next start",
         "lint": "eslint",
-        "format": "prettier --write ."
+        "format": "prettier --write .",
+        "db:up": "sudo docker compose up -d",
+        "db:down": "sudo docker compose down"
     },
     "dependencies": {
         "@base-ui/react": "^1.8.0",
