@@ -1,4 +1,5 @@
 import { db } from "@/db";
+import { passkey } from "@better-auth/passkey";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
@@ -25,5 +26,5 @@ export const auth = betterAuth({
             clientSecret: process.env.DISCORD_CLIENT_SECRET as string
         }
     },
-    plugins: [admin(), lastLoginMethod(), twoFactor(), nextCookies()]
+    plugins: [admin(), lastLoginMethod(), twoFactor(), passkey(), nextCookies()]
 });
