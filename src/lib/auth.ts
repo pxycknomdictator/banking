@@ -1,5 +1,7 @@
 import { db } from "@/db";
+import { redis } from "@lib/redis";
 import { passkey } from "@better-auth/passkey";
+import { redisStorage } from "@better-auth/redis-storage";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
@@ -11,6 +13,10 @@ export const auth = betterAuth({
     secret: process.env.BETTER_AUTH_SECRET,
     verification: { storeIdentifier: "hashed", storeInDatabase: true },
     database: drizzleAdapter(db, { provider: "pg", usePlural: true }),
+    secondaryStorage: redisStorage({
+        client: redis,
+        keyPrefix: "better-auth:"
+    }),
     emailAndPassword: { enabled: true },
     account: {
         storeStateStrategy: "database",
