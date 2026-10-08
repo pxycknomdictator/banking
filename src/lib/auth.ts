@@ -2,6 +2,7 @@ import { db } from "@/db";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
+import { admin, lastLoginMethod, twoFactor } from "better-auth/plugins";
 
 export const auth = betterAuth({
     appName: "banking",
@@ -24,5 +25,5 @@ export const auth = betterAuth({
             clientSecret: process.env.DISCORD_CLIENT_SECRET as string
         }
     },
-    plugins: [nextCookies()]
+    plugins: [admin(), lastLoginMethod(), twoFactor(), nextCookies()]
 });
