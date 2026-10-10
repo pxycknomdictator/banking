@@ -112,3 +112,6 @@ export const auth = betterAuth({
     },
     plugins: [admin(), lastLoginMethod(), twoFactor(), passkey(), nextCookies()]
 });
+
+export type BetterAuthUser = typeof auth.$Infer.Session.user;
+export type BetterAuthSession = typeof auth.$Infer.Session.session;
