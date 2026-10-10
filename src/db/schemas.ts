@@ -6,8 +6,11 @@ import {
     boolean,
     integer,
     uuid,
-    index
+    index,
+    pgEnum
 } from "drizzle-orm/pg-core";
+
+export const userRole = pgEnum("role", ["user", "admin"]);
 
 export const users = pgTable("users", {
     id: uuid("id")
@@ -22,7 +25,7 @@ export const users = pgTable("users", {
         .defaultNow()
         .$onUpdate(() => /* @__PURE__ */ new Date())
         .notNull(),
-    role: text("role"),
+    role: userRole("role").default("user"),
     banned: boolean("banned").default(false),
     banReason: text("ban_reason"),
     banExpires: timestamp("ban_expires"),
