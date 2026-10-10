@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { redis } from "@lib/redis";
+import { sendEmail } from "@lib/email";
 import { passkey } from "@better-auth/passkey";
 import { redisStorage } from "@better-auth/redis-storage";
 import { betterAuth } from "better-auth";
@@ -36,6 +37,23 @@ export const auth = betterAuth({
         password: {
             hash: async (password) => await hash(password),
             verify: async ({ hash, password }) => await verify(hash, password)
+        },
+        async sendResetPassword({ user, url }) {
+            void sendEmail({
+                to: user.email,
+                subject: "Reset your password",
+                html: `Click the link to reset your password: ${url}<br/><br/>This link expires in 5 minutes.`
+            });
+        }
+    },
+    emailVerification: {
+        expiresIn: 60 * 5,
+        async sendVerificationEmail({ user, url }) {
+            void sendEmail({
+                to: user.email,
+                subject: "Verify your email address",
+                html: `Click the link to verify your email: ${url}<br/><br/>This link expires in 5 minutes.`
+            });
         }
     },
     account: {
