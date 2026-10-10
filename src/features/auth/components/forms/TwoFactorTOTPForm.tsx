@@ -1,5 +1,5 @@
 "use client";
 
 export function TwoFactorTOTPForm() {
-    return <h1 className="font-normal text-2xl">Two factor TOTP form</h1>;
+    return <h1 className="font-medium text-2xl">Two factor TOTP form</h1>;
 }
