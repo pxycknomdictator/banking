@@ -18,6 +18,17 @@ export const auth = betterAuth({
         client: redis,
         keyPrefix: "better-auth:"
     }),
+    session: {
+        expiresIn: 60 * 60,
+        storeSessionInDatabase: true,
+        preserveSessionInDatabase: false
+    },
+    advanced: {
+        useSecureCookies: process.env.NODE_ENV === "production",
+        disableCSRFCheck: false,
+        disableOriginCheck: false,
+        database: { generateId: "uuid", validateSchema: true }
+    },
     emailAndPassword: {
         enabled: true,
         resetPasswordTokenExpiresIn: 60 * 5,
