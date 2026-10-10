@@ -64,6 +64,30 @@ export const auth = betterAuth({
             trustedProviders: ["email-password", "google", "github", "discord"]
         }
     },
+    user: {
+        changeEmail: {
+            enabled: true,
+            updateEmailWithoutVerification: false,
+            async sendChangeEmailConfirmation({ user, url, newEmail }) {
+                void sendEmail({
+                    to: newEmail,
+                    subject: "Confirm your email change",
+                    html: `Hi ${user.name},<br/><br/>You requested to change your email address.<br/><br/>Current email: ${user.email}<br/>New email: ${newEmail}<br/><br/>Click the link below to confirm your email change:<br/>${url}<br/><br/>This link expires in 5 minutes.`
+                });
+            }
+        },
+        deleteUser: {
+            enabled: true,
+            deleteTokenExpiresIn: 60 * 5,
+            async sendDeleteAccountVerification({ user, url }) {
+                void sendEmail({
+                    to: user.email,
+                    subject: "Confirm account deletion",
+                    html: `Hi ${user.name},<br/><br/>You requested to delete your account.<br/><br/>Account email: ${user.email}<br/><br/>Click the link below to confirm your account deletion:<br/>${url}<br/><br/>This link expires in 5 minutes.<br/><br/>If you didn't request this, you can safely ignore this email.`
+                });
+            }
+        }
+    },
     socialProviders: {
         google: {
             clientId: process.env.GOOGLE_CLIENT_ID as string,
