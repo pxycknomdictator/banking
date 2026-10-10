@@ -10,7 +10,7 @@ import {
     pgEnum
 } from "drizzle-orm/pg-core";
 
-export const userRole = pgEnum("role", ["user", "admin"]);
+export const userRole = pgEnum("role", ["user", "admin", "manager"]);
 
 export const users = pgTable("users", {
     id: uuid("id")

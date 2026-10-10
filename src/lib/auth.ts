@@ -70,7 +70,7 @@ export const auth = betterAuth({
                 input: false,
                 required: false,
                 defaultValue: "user",
-                type: ["user", "admin"]
+                type: ["user", "admin", "manager"]
             }
         },
         changeEmail: {
