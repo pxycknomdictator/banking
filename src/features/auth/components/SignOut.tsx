@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { Loader, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
-import { Loading } from "@/features/auth/components/Loading";
 
 export function SignOut() {
     const router = useRouter();
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
 
     async function signOut() {
         setLoading(true);
@@ -30,14 +30,17 @@ export function SignOut() {
             onClick={signOut}
             variant={"default"}
             disabled={loading}
-            className="py-6 px-5 font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+            className="py-6 px-5 gap-x-2 font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
         >
             {loading ? (
-                <div className="py-6 px-3.5">
-                    <Loading />
-                </div>
+                <>
+                    <Loader className="size-4.5 animate-[spin_2s_linear_infinite]" />
+                </>
             ) : (
-                "Signout"
+                <>
+                    <LogOut />
+                    <span>Sign Out</span>
+                </>
             )}
         </Button>
     );
