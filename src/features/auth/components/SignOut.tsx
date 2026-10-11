@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export function SignOut() {
     const router = useRouter();
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
 
     async function signOut() {
         setLoading(true);

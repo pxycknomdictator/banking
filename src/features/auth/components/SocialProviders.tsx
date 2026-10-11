@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { Loader } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
-import { Loading } from "@/features/auth/components/Loading";
 
 export function SocialProviders() {
     type SocialProvider = "google" | "github" | "discord";
@@ -57,7 +57,7 @@ export function SocialProviders() {
                         Last used
                     </Badge>
                     {whichLoading === id ? (
-                        <Loading />
+                        <Loader className="size-6 animate-[spin_2s_linear_infinite]" />
                     ) : (
                         <Image
                             src={URL}

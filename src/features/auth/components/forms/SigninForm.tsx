@@ -33,7 +33,7 @@ export function SignInForm() {
                     </div>
                     <div className="my-4 text-center">
                         <span className="font-normal">
-                            Don't have an account?
+                            Don&apos;t have an account?
                         </span>{" "}
                         <Link
                             href={"/sign-up"}
