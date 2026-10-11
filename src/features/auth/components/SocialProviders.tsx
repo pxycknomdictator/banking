@@ -42,10 +42,11 @@ export function SocialProviders() {
     }
 
     return (
-        <section className="w-full grid gap-y-3.5">
+        <section className="w-full grid gap-y-3.5 lg:grid-cols-3 lg:gap-x-4">
             {SOCIAL_PROVIDER_LIST.map(({ id, text, URL }) => (
                 <Button
                     key={id}
+                    type="button"
                     variant={"outline"}
                     disabled={whichLoading !== null}
                     onClick={() => signInWithSocialProvider(id)}
