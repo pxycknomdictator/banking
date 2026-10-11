@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
 import { Loading } from "@/features/auth/components/Loading";
@@ -50,8 +51,11 @@ export function SocialProviders() {
                     variant={"outline"}
                     disabled={whichLoading !== null}
                     onClick={() => signInWithSocialProvider(id)}
-                    className="py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                    className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 relative"
                 >
+                    <Badge className="absolute -top-2.75 -right-2.5 font-medium">
+                        Last used
+                    </Badge>
                     {whichLoading === id ? (
                         <Loading />
                     ) : (
