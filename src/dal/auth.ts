@@ -18,6 +18,11 @@ export async function getSession(): Promise<BETTER_AUTH_DAL | null> {
     return webAppSession;
 }
 
+export async function guestGuard(): Promise<void> {
+    const session = await getSession();
+    if (session) checkRoleAndRedirect(session);
+}
+
 export async function getAuthenticatedSession(): Promise<BETTER_AUTH_DAL> {
     const webAppSession = await getSession();
     if (!webAppSession) redirect("/sign-in");
