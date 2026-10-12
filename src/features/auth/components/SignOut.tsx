@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { Loader, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
@@ -17,9 +18,10 @@ export function SignOut() {
                 fetchOptions: { onSuccess: () => router.push("/sign-in") }
             });
             if (error) throw new Error(error.message);
+            toast.success("Sign out successfully!");
         } catch (e) {
             const msg = e instanceof Error ? e.message : "Something went wrong";
-            console.error(msg);
+            toast.error(msg);
         } finally {
             setLoading(false);
         }
@@ -33,15 +35,11 @@ export function SignOut() {
             className="py-6 px-5 gap-x-2 font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
         >
             {loading ? (
-                <>
-                    <Loader className="size-4.5 animate-[spin_2s_linear_infinite]" />
-                </>
+                <Loader className="size-4.5 animate-[spin_2s_linear_infinite]" />
             ) : (
-                <>
-                    <LogOut />
-                    <span>Sign Out</span>
-                </>
+                <LogOut className="size-4.5" />
             )}
+            <span>Sign Out</span>
         </Button>
     );
 }
