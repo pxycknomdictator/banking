@@ -6,8 +6,11 @@ import { Loader } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { authClient } from "@/lib/auth-client";
+import { useLastUsedMethod } from "@/features/auth/hooks/lastUsedMethod";
 
 export function SocialProviders() {
+    const method = useLastUsedMethod();
+
     type SocialProvider = "google" | "github" | "discord";
 
     const [whichLoading, setWhichLoading] = useState<SocialProvider | null>(
@@ -53,9 +56,11 @@ export function SocialProviders() {
                     onClick={() => signInWithSocialProvider(id)}
                     className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 relative"
                 >
-                    <Badge className="absolute -top-2.75 -right-2.5 font-medium">
-                        Last used
-                    </Badge>
+                    {method === id && (
+                        <Badge className="absolute -top-2.75 -right-2.5 font-medium">
+                            Last used
+                        </Badge>
+                    )}
                     {whichLoading === id ? (
                         <Loader className="size-6 animate-[spin_2s_linear_infinite]" />
                     ) : (
