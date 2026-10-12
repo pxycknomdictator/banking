@@ -1,16 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { Fingerprint } from "lucide-react";
+import { Fingerprint, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardFooter, CardHeader } from "@/components/ui/card";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
 import { SocialProviders } from "@/features/auth/components/SocialProviders";
+import { TopRoundIcon } from "@/features/auth/components/TopRoundIcon";
 
 export function SignInForm() {
     return (
         <FormWrapper>
             <CardHeader>
+                <TopRoundIcon LucideIcon={LogIn} />
                 <h1 className="font-medium text-2xl">Sign in form</h1>
             </CardHeader>
             <CardFooter>

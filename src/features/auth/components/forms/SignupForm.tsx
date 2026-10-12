@@ -1,15 +1,18 @@
 "use client";
 
 import Link from "next/link";
+import { UserRoundPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardFooter, CardHeader } from "@/components/ui/card";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
 import { SocialProviders } from "@/features/auth/components/SocialProviders";
+import { TopRoundIcon } from "@/features/auth/components/TopRoundIcon";
 
 export function SignUpForm() {
     return (
         <FormWrapper>
             <CardHeader>
+                <TopRoundIcon LucideIcon={UserRoundPlus} />
                 <h1 className="font-medium text-2xl">Sign up form</h1>
             </CardHeader>
             <CardFooter>
