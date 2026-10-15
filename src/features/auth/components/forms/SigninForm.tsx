@@ -87,12 +87,15 @@ export function SignInForm() {
                                         {...field}
                                         id="signin-email"
                                         type="email"
+                                        autoComplete="email"
                                         disabled={isLoading}
                                         className="py-5.75 pl-3"
                                         aria-invalid={fieldState.invalid}
+                                        aria-describedby="signin-email-error"
                                     />
                                     {fieldState.invalid && (
                                         <FieldError
+                                            id="signin-email-error"
                                             errors={[fieldState.error]}
                                         />
                                     )}
@@ -123,9 +126,11 @@ export function SignInForm() {
                                         id="signin-password"
                                         disabled={isLoading}
                                         aria-invalid={fieldState.invalid}
+                                        aria-describedby="signin-password-error"
                                     />
                                     {fieldState.invalid && (
                                         <FieldError
+                                            id="signin-password-error"
                                             errors={[fieldState.error]}
                                         />
                                     )}
@@ -188,7 +193,8 @@ export function SignInForm() {
                             disabled={isLoading}
                             className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                         >
-                            <Fingerprint /> Sign in with Passkey
+                            <Fingerprint data-icon="inline-start" /> Sign in
+                            with Passkey
                         </Button>
                     </div>
                     <div className="my-4 text-center">

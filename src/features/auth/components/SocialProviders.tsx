@@ -24,9 +24,21 @@ export function SocialProviders() {
     };
 
     const SOCIAL_PROVIDER_LIST: Array<SocialProviderList> = [
-        { id: "google", text: "Google", URL: "/google.svg" },
-        { id: "github", text: "Github", URL: "/github.svg" },
-        { id: "discord", text: "Discord", URL: "/discord.svg" }
+        {
+            id: "google",
+            text: "Google",
+            URL: "/google.svg"
+        },
+        {
+            id: "github",
+            text: "Github",
+            URL: "/github.svg"
+        },
+        {
+            id: "discord",
+            text: "Discord",
+            URL: "/discord.svg"
+        }
     ];
 
     async function signInWithSocialProvider(provider: SocialProvider) {
@@ -66,7 +78,7 @@ export function SocialProviders() {
                     ) : (
                         <Image
                             src={URL}
-                            alt={id}
+                            alt=""
                             width={24}
                             height={24}
                             className="h-6 w-6"

@@ -13,13 +13,15 @@ export function InputPassword(props: InputPasswordProps) {
         <div className="relative">
             <Input
                 {...props}
+                aria-label="Password"
                 type={showPassword ? "text" : "password"}
                 className="py-5.75 pl-3"
             />
             <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 cursor-pointer"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="absolute right-3.5 top-1/2 size-8 -translate-y-1/2 cursor-pointer"
             >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>

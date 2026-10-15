@@ -37,10 +37,15 @@ export function SignUpForm() {
         }
     });
 
-    async function onSubmit({ confirmPassword, ...restForm }: SignupSchema) {
+    async function onSubmit(values: SignupSchema) {
+        const { name, email, password } = values;
         setIsLoading(true);
         try {
-            const { error } = await authClient.signUp.email({ ...restForm });
+            const { error } = await authClient.signUp.email({
+                name,
+                email,
+                password
+            });
             if (error) throw new Error(error.message);
             toast.success("Signup successfully!");
             router.push("/dashboard");
@@ -79,9 +84,11 @@ export function SignUpForm() {
                                         disabled={isLoading}
                                         className="py-5.75 pl-3"
                                         aria-invalid={fieldState.invalid}
+                                        aria-describedby="signup-name-error"
                                     />
                                     {fieldState.invalid && (
                                         <FieldError
+                                            id="signup-name-error"
                                             errors={[fieldState.error]}
                                         />
                                     )}
@@ -103,12 +110,15 @@ export function SignUpForm() {
                                         {...field}
                                         id="signup-email"
                                         type="email"
+                                        autoComplete="email"
                                         className="py-5.75 pl-3"
                                         aria-invalid={fieldState.invalid}
+                                        aria-describedby="signup-email-error"
                                         disabled={isLoading}
                                     />
                                     {fieldState.invalid && (
                                         <FieldError
+                                            id="signup-email-error"
                                             errors={[fieldState.error]}
                                         />
                                     )}
@@ -130,10 +140,12 @@ export function SignUpForm() {
                                         {...field}
                                         id="signup-password"
                                         aria-invalid={fieldState.invalid}
+                                        aria-describedby="signup-password-error"
                                         disabled={isLoading}
                                     />
                                     {fieldState.invalid && (
                                         <FieldError
+                                            id="signup-password-error"
                                             errors={[fieldState.error]}
                                         />
                                     )}
@@ -155,10 +167,12 @@ export function SignUpForm() {
                                         {...field}
                                         id="signup-confirm-password"
                                         aria-invalid={fieldState.invalid}
+                                        aria-describedby="signup-confirm-password-error"
                                         disabled={isLoading}
                                     />
                                     {fieldState.invalid && (
                                         <FieldError
+                                            id="signup-confirm-password-error"
                                             errors={[fieldState.error]}
                                         />
                                     )}

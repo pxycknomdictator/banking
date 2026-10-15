@@ -1,15 +1,15 @@
 "use client";
 
 import { authClient } from "@/lib/auth-client";
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 
 export function useLastUsedMethod() {
-    const [lastMethod, setLastMethod] = useState<string | null>(null);
-
-    useEffect(() => {
-        const method = authClient.getLastUsedLoginMethod();
-        if (method && typeof method === "string") setLastMethod(method);
-    }, []);
-
-    return lastMethod;
+    return useSyncExternalStore(
+        () => () => {},
+        () => {
+            const method = authClient.getLastUsedLoginMethod();
+            return typeof method === "string" ? method : null;
+        },
+        () => null
+    );
 }
