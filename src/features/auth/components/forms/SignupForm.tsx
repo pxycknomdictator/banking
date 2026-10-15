@@ -69,11 +69,12 @@ export function SignUpForm() {
                                     className="-space-y-1.5"
                                     data-invalid={fieldState.invalid}
                                 >
-                                    <FieldLabel htmlFor="form-rhf-demo-title">
+                                    <FieldLabel htmlFor="signup-name">
                                         Name
                                     </FieldLabel>
                                     <Input
                                         {...field}
+                                        id="signup-name"
                                         type="text"
                                         disabled={isLoading}
                                         className="py-5.75 pl-3"
@@ -95,12 +96,12 @@ export function SignUpForm() {
                                     className="-space-y-1.5"
                                     data-invalid={fieldState.invalid}
                                 >
-                                    <FieldLabel htmlFor="form-rhf-demo-email">
+                                    <FieldLabel htmlFor="signup-email">
                                         Email
                                     </FieldLabel>
                                     <Input
                                         {...field}
-                                        id="form-rhf-demo-email"
+                                        id="signup-email"
                                         type="email"
                                         className="py-5.75 pl-3"
                                         aria-invalid={fieldState.invalid}
@@ -122,12 +123,12 @@ export function SignUpForm() {
                                     className="-space-y-1.5"
                                     data-invalid={fieldState.invalid}
                                 >
-                                    <FieldLabel htmlFor="form-rhf-demo-password">
+                                    <FieldLabel htmlFor="signup-password">
                                         Password
                                     </FieldLabel>
                                     <InputPassword
                                         {...field}
-                                        id="form-rhf-demo-password"
+                                        id="signup-password"
                                         aria-invalid={fieldState.invalid}
                                         disabled={isLoading}
                                     />
@@ -147,12 +148,12 @@ export function SignUpForm() {
                                     className="-space-y-1.5"
                                     data-invalid={fieldState.invalid}
                                 >
-                                    <FieldLabel htmlFor="form-rhf-demo-confirm-password">
+                                    <FieldLabel htmlFor="signup-confirm-password">
                                         Confirm Password
                                     </FieldLabel>
                                     <InputPassword
                                         {...field}
-                                        id="form-rhf-demo-confirm-password"
+                                        id="signup-confirm-password"
                                         aria-invalid={fieldState.invalid}
                                         disabled={isLoading}
                                     />

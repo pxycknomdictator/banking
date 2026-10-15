@@ -73,7 +73,7 @@ export function SignInForm() {
                                     data-invalid={fieldState.invalid}
                                 >
                                     <div className="flex items-center justify-between">
-                                        <FieldLabel htmlFor="form-rhf-demo-email">
+                                        <FieldLabel htmlFor="signin-email">
                                             Email
                                         </FieldLabel>
                                         {method === "email" && (
@@ -84,7 +84,7 @@ export function SignInForm() {
                                     </div>
                                     <Input
                                         {...field}
-                                        id="form-rhf-demo-email"
+                                        id="signin-email"
                                         type="email"
                                         disabled={isLoading}
                                         className="py-5.75 pl-3"
@@ -107,7 +107,7 @@ export function SignInForm() {
                                     data-invalid={fieldState.invalid}
                                 >
                                     <div className="flex items-center justify-between">
-                                        <FieldLabel htmlFor="form-rhf-demo-password">
+                                        <FieldLabel htmlFor="signin-password">
                                             Password
                                         </FieldLabel>
                                         <Link
@@ -119,7 +119,7 @@ export function SignInForm() {
                                     </div>
                                     <InputPassword
                                         {...field}
-                                        id="form-rhf-demo-password"
+                                        id="signin-password"
                                         disabled={isLoading}
                                         aria-invalid={fieldState.invalid}
                                     />
@@ -141,14 +141,14 @@ export function SignInForm() {
                                     data-invalid={fieldState.invalid}
                                 >
                                     <Checkbox
-                                        id="remember_me"
+                                        id="signin-remember-me"
                                         checked={field.value}
                                         onCheckedChange={field.onChange}
                                         disabled={isLoading}
                                         aria-invalid={fieldState.invalid}
                                     />
                                     <FieldLabel
-                                        htmlFor="remember_me"
+                                        htmlFor="signin-remember-me"
                                         className="text-sm font-normal cursor-pointer"
                                     >
                                         Remember me
