@@ -40,6 +40,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         function handleThemeShortcut(event: KeyboardEvent) {
             if (
+                typeof event.key !== "string" ||
                 event.key.toLowerCase() !== "d" ||
                 event.metaKey ||
                 event.ctrlKey ||
