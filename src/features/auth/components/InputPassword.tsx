@@ -21,7 +21,7 @@ export function InputPassword(props: InputPasswordProps) {
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
-                className="absolute right-3.5 top-1/2 size-8 -translate-y-1/2 cursor-pointer"
+                className="absolute right-1.5 top-1/2 size-8 -translate-y-1/2 cursor-pointer"
             >
                 {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
