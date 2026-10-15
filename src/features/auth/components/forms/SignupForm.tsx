@@ -1,9 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { toast } from "sonner";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { UserRoundPlus } from "lucide-react";
+import { Loader, UserRoundPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
@@ -20,6 +24,9 @@ import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/features/auth/components/InputPassword";
 
 export function SignUpForm() {
+    const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
+
     const form = useForm<SignupSchema>({
         resolver: zodResolver(signupSchema),
         defaultValues: {
@@ -30,8 +37,19 @@ export function SignUpForm() {
         }
     });
 
-    async function onSubmit({ name, email, password }: SignupSchema) {
-        console.log({ name, email, password });
+    async function onSubmit({ confirmPassword, ...restForm }: SignupSchema) {
+        setIsLoading(true);
+        try {
+            const { error } = await authClient.signUp.email({ ...restForm });
+            if (error) throw new Error(error.message);
+            toast.success("Signup successfully!");
+            router.push("/dashboard");
+        } catch (e) {
+            const msg = e instanceof Error ? e.message : "Something went wrong";
+            toast.error(msg);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -57,6 +75,7 @@ export function SignUpForm() {
                                     <Input
                                         {...field}
                                         type="text"
+                                        disabled={isLoading}
                                         className="py-5.75 pl-3"
                                         aria-invalid={fieldState.invalid}
                                     />
@@ -76,14 +95,16 @@ export function SignUpForm() {
                                     className="-space-y-1.5"
                                     data-invalid={fieldState.invalid}
                                 >
-                                    <FieldLabel htmlFor="form-rhf-demo-title">
+                                    <FieldLabel htmlFor="form-rhf-demo-email">
                                         Email
                                     </FieldLabel>
                                     <Input
                                         {...field}
+                                        id="form-rhf-demo-email"
                                         type="email"
                                         className="py-5.75 pl-3"
                                         aria-invalid={fieldState.invalid}
+                                        disabled={isLoading}
                                     />
                                     {fieldState.invalid && (
                                         <FieldError
@@ -101,12 +122,14 @@ export function SignUpForm() {
                                     className="-space-y-1.5"
                                     data-invalid={fieldState.invalid}
                                 >
-                                    <FieldLabel htmlFor="form-rhf-demo-title">
+                                    <FieldLabel htmlFor="form-rhf-demo-password">
                                         Password
                                     </FieldLabel>
                                     <InputPassword
                                         {...field}
+                                        id="form-rhf-demo-password"
                                         aria-invalid={fieldState.invalid}
+                                        disabled={isLoading}
                                     />
                                     {fieldState.invalid && (
                                         <FieldError
@@ -124,12 +147,14 @@ export function SignUpForm() {
                                     className="-space-y-1.5"
                                     data-invalid={fieldState.invalid}
                                 >
-                                    <FieldLabel htmlFor="form-rhf-demo-title">
+                                    <FieldLabel htmlFor="form-rhf-demo-confirm-password">
                                         Confirm Password
                                     </FieldLabel>
                                     <InputPassword
                                         {...field}
+                                        id="form-rhf-demo-confirm-password"
                                         aria-invalid={fieldState.invalid}
+                                        disabled={isLoading}
                                     />
                                     {fieldState.invalid && (
                                         <FieldError
@@ -148,9 +173,15 @@ export function SignUpForm() {
                         <Button
                             type="submit"
                             form="signup-form"
+                            disabled={isLoading}
                             variant={"default"}
                             className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                         >
+                            {isLoading ? (
+                                <Loader className="size-4.5 animate-[spin_2s_linear_infinite]" />
+                            ) : (
+                                <UserRoundPlus className="size-4.5" />
+                            )}
                             Sign up
                         </Button>
                     </div>

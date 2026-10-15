@@ -1,9 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { toast } from "sonner";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { Fingerprint, LogIn } from "lucide-react";
+import { Fingerprint, Loader, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { FormWrapper } from "@/features/auth/components/FormWrapper";
@@ -23,7 +27,9 @@ import { Badge } from "@/components/ui/badge";
 import { useLastUsedMethod } from "@/features/auth/hooks/lastUsedMethod";
 
 export function SignInForm() {
+    const router = useRouter();
     const method = useLastUsedMethod();
+    const [isLoading, setIsLoading] = useState(false);
 
     const form = useForm<SigninSchema>({
         resolver: zodResolver(signinSchema),
@@ -31,7 +37,22 @@ export function SignInForm() {
     });
 
     async function onSubmit({ email, password, rememberMe }: SigninSchema) {
-        console.log({ email, password, rememberMe });
+        setIsLoading(true);
+        try {
+            const { error } = await authClient.signIn.email({
+                email,
+                password,
+                rememberMe
+            });
+            if (error) throw new Error(error.message);
+            toast.success("Signed in successfully!");
+            router.push("/dashboard");
+        } catch (e) {
+            const msg = e instanceof Error ? e.message : "Something went wrong";
+            toast.error(msg);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -52,7 +73,7 @@ export function SignInForm() {
                                     data-invalid={fieldState.invalid}
                                 >
                                     <div className="flex items-center justify-between">
-                                        <FieldLabel htmlFor="form-rhf-demo-title">
+                                        <FieldLabel htmlFor="form-rhf-demo-email">
                                             Email
                                         </FieldLabel>
                                         {method === "email" && (
@@ -63,7 +84,9 @@ export function SignInForm() {
                                     </div>
                                     <Input
                                         {...field}
+                                        id="form-rhf-demo-email"
                                         type="email"
+                                        disabled={isLoading}
                                         className="py-5.75 pl-3"
                                         aria-invalid={fieldState.invalid}
                                     />
@@ -84,7 +107,7 @@ export function SignInForm() {
                                     data-invalid={fieldState.invalid}
                                 >
                                     <div className="flex items-center justify-between">
-                                        <FieldLabel htmlFor="form-rhf-demo-title">
+                                        <FieldLabel htmlFor="form-rhf-demo-password">
                                             Password
                                         </FieldLabel>
                                         <Link
@@ -96,6 +119,8 @@ export function SignInForm() {
                                     </div>
                                     <InputPassword
                                         {...field}
+                                        id="form-rhf-demo-password"
+                                        disabled={isLoading}
                                         aria-invalid={fieldState.invalid}
                                     />
                                     {fieldState.invalid && (
@@ -119,6 +144,7 @@ export function SignInForm() {
                                         id="remember_me"
                                         checked={field.value}
                                         onCheckedChange={field.onChange}
+                                        disabled={isLoading}
                                         aria-invalid={fieldState.invalid}
                                     />
                                     <FieldLabel
@@ -145,13 +171,20 @@ export function SignInForm() {
                             type="submit"
                             form="signin-form"
                             variant={"default"}
+                            disabled={isLoading}
                             className="py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                         >
+                            {isLoading ? (
+                                <Loader className="size-4.5 animate-[spin_2s_linear_infinite]" />
+                            ) : (
+                                <LogIn className="size-4.5" />
+                            )}
                             Sign in
                         </Button>
                         <Button
                             type="button"
                             variant={"outline"}
+                            disabled={isLoading}
                             className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                         >
                             <Fingerprint /> Sign in with Passkey
