@@ -14,3 +14,16 @@ export function checkRoleAndRedirect(session: BETTER_AUTH_DAL) {
             redirect("/sign-in");
     }
 }
+
+export function getDashboardPath(role: string | null | undefined): string {
+    switch (role) {
+        case "admin":
+            return "/admin/dashboard";
+        case "manager":
+            return "/manager/dashboard";
+        case "user":
+            return "/dashboard";
+        default:
+            return "/unauthorized";
+    }
+}

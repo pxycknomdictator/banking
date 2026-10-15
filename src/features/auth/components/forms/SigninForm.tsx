@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { getDashboardPath } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import { Fingerprint, Loader, LogIn } from "lucide-react";
@@ -39,14 +40,14 @@ export function SignInForm() {
     async function onSubmit({ email, password, rememberMe }: SigninSchema) {
         setIsLoading(true);
         try {
-            const { error } = await authClient.signIn.email({
+            const { error, data } = await authClient.signIn.email({
                 email,
                 password,
                 rememberMe
             });
             if (error) throw new Error(error.message);
             toast.success("Signed in successfully!");
-            router.push("/dashboard");
+            router.push(getDashboardPath(data.user.role));
         } catch (e) {
             const msg = e instanceof Error ? e.message : "Something went wrong";
             toast.error(msg);
