@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { UserRoundPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CardContent, CardFooter, CardHeader } from "@/components/ui/card";
@@ -10,6 +10,14 @@ import { FormWrapper } from "@/features/auth/components/FormWrapper";
 import { SocialProviders } from "@/features/auth/components/SocialProviders";
 import { TopRoundIcon } from "@/features/auth/components/TopRoundIcon";
 import { signupSchema, type SignupSchema } from "@/features/auth/validators";
+import {
+    Field,
+    FieldError,
+    FieldGroup,
+    FieldLabel
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { InputPassword } from "@/features/auth/components/InputPassword";
 
 export function SignUpForm() {
     const form = useForm<SignupSchema>({
@@ -33,10 +41,106 @@ export function SignUpForm() {
                 <h1 className="font-medium text-2xl">Sign up form</h1>
             </CardHeader>
             <CardContent>
-                <form
-                    id="signup-form"
-                    onSubmit={form.handleSubmit(onSubmit)}
-                ></form>
+                <form id="signup-form" onSubmit={form.handleSubmit(onSubmit)}>
+                    <FieldGroup className="-space-y-4">
+                        <Controller
+                            name="name"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field
+                                    className="-space-y-1.5"
+                                    data-invalid={fieldState.invalid}
+                                >
+                                    <FieldLabel htmlFor="form-rhf-demo-title">
+                                        Name
+                                    </FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="text"
+                                        className="py-5.75 pl-3"
+                                        aria-invalid={fieldState.invalid}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            name="email"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field
+                                    className="-space-y-1.5"
+                                    data-invalid={fieldState.invalid}
+                                >
+                                    <FieldLabel htmlFor="form-rhf-demo-title">
+                                        Email
+                                    </FieldLabel>
+                                    <Input
+                                        {...field}
+                                        type="email"
+                                        className="py-5.75 pl-3"
+                                        aria-invalid={fieldState.invalid}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            name="password"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field
+                                    className="-space-y-1.5"
+                                    data-invalid={fieldState.invalid}
+                                >
+                                    <FieldLabel htmlFor="form-rhf-demo-title">
+                                        Password
+                                    </FieldLabel>
+                                    <InputPassword
+                                        {...field}
+                                        aria-invalid={fieldState.invalid}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                        <Controller
+                            name="confirmPassword"
+                            control={form.control}
+                            render={({ field, fieldState }) => (
+                                <Field
+                                    className="-space-y-1.5"
+                                    data-invalid={fieldState.invalid}
+                                >
+                                    <FieldLabel htmlFor="form-rhf-demo-title">
+                                        Confirm Password
+                                    </FieldLabel>
+                                    <InputPassword
+                                        {...field}
+                                        aria-invalid={fieldState.invalid}
+                                    />
+                                    {fieldState.invalid && (
+                                        <FieldError
+                                            errors={[fieldState.error]}
+                                        />
+                                    )}
+                                </Field>
+                            )}
+                        />
+                    </FieldGroup>
+                </form>
             </CardContent>
             <CardFooter>
                 <section className="w-full">
