@@ -46,6 +46,10 @@ export function SignInForm() {
                 rememberMe
             });
             if (error) throw new Error(error.message);
+            if (data && "twoFactorRedirect" in data && data.twoFactorRedirect) {
+                router.push("/two-factor/verify-totp");
+                return;
+            }
             toast.success("Signed in successfully!");
             router.push(getDashboardPath(data.user.role));
         } catch (e) {
