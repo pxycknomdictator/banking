@@ -11,7 +11,7 @@ export const authClient = createAuthClient({
     plugins: [
         adminClient(),
         lastLoginMethodClient(),
-        twoFactorClient(),
+        twoFactorClient({ twoFactorPage: "/two-factor/verify-totp" }),
         passkeyClient()
     ]
 });
