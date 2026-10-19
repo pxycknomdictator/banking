@@ -122,6 +122,22 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
         }
     }
 
+    function downloadBackupCodes() {
+        if (!setup) return;
+
+        const file = new Blob([setup.backupCodes.join("\n")], {
+            type: "text/plain;charset=utf-8"
+        });
+        const url = URL.createObjectURL(file);
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = "recovery-codes.txt";
+        link.click();
+        URL.revokeObjectURL(url);
+        toast.success("Recovery codes downloaded.");
+    }
+
     if (isEnabled) {
         return (
             <Card className="max-w-lg">
@@ -174,13 +190,23 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                         <code className="mt-3 block break-all text-sm">
                             {setup.backupCodes.join(" ")}
                         </code>
-                        <Button
-                            type="button"
-                            onClick={copyBackupCodes}
-                            className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 mt-4"
-                        >
-                            Copy backup codes
-                        </Button>
+                        <div className="mt-4 grid gap-3 md:grid-cols-2">
+                            <Button
+                                type="button"
+                                onClick={copyBackupCodes}
+                                className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                            >
+                                Copy backup codes
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={downloadBackupCodes}
+                                className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                            >
+                                Download recovery codes
+                            </Button>
+                        </div>
                     </div>
                     <form
                         id="verify-two-factor-form"
