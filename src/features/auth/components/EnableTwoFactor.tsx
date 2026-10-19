@@ -225,13 +225,13 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                     </form>
                 </CardContent>
                 <CardFooter>
-                    <div className="w-full grid grid-cols-2 gap-x-3">
+                    <div className="w-full grid gap-y-3 md:grid-cols-2 gap-x-3">
                         <Button
                             type="button"
                             variant="outline"
                             disabled={isLoading}
                             onClick={() => setSetup(null)}
-                            className="py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                            className="order-2 md:order-1 py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                         >
                             Cancel
                         </Button>
@@ -239,7 +239,7 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                             type="submit"
                             form="verify-two-factor-form"
                             disabled={isLoading}
-                            className="py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                            className="order-1 md:order-2 py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                         >
                             {isLoading ? "Verifying..." : "Verify and enable"}
                         </Button>
@@ -314,10 +314,10 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                             </FieldGroup>
                         </form>
                         <AlertDialogFooter>
-                            <div className="w-full grid grid-cols-2 gap-x-3">
+                            <div className="w-full grid gap-y-3 md:grid-cols-2 gap-x-3">
                                 <AlertDialogCancel
                                     disabled={isLoading}
-                                    className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                    className="order-2 md:order-1 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                                 >
                                     Cancel
                                 </AlertDialogCancel>
@@ -325,7 +325,7 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                                     type="submit"
                                     form="enable-two-factor-form"
                                     disabled={isLoading}
-                                    className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                    className="order-1 md:order-2 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                                 >
                                     {isLoading
                                         ? "Starting setup..."
