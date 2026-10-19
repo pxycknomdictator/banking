@@ -70,11 +70,7 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
         defaultValues: { code: "", trustDevice: false }
     });
 
-    async function beginSetup({
-        password
-    }: {
-        password: string;
-    }) {
+    async function beginSetup({ password }: { password: string }) {
         setIsLoading(true);
         try {
             const { data, error } = await authClient.twoFactor.enable({

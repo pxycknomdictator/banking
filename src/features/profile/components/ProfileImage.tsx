@@ -222,30 +222,32 @@ export function ProfileImage({ name, image }: ProfileImageProps) {
                             className="w-full accent-primary"
                         />
                     </div>
-                    <div className="flex gap-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={resetCrop}
-                            disabled={isSaving}
-                            className="py-7 px-6 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
-                        >
-                            <X />
-                            Cancel
-                        </Button>
-                        <Button
-                            type="button"
-                            onClick={saveCroppedImage}
-                            disabled={isSaving}
-                            className="py-7 px-6 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
-                        >
-                            {isSaving ? (
-                                <Loader2 className="animate-spin" />
-                            ) : (
-                                <Check />
-                            )}
-                            {isSaving ? "Saving..." : "Save image"}
-                        </Button>
+                    <div className="md:flex md:justify-end">
+                        <div className="grid grid-cols-2 md:flex gap-x-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={resetCrop}
+                                disabled={isSaving}
+                                className="py-7 px-6 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                            >
+                                <X />
+                                Cancel
+                            </Button>
+                            <Button
+                                type="button"
+                                onClick={saveCroppedImage}
+                                disabled={isSaving}
+                                className="py-7 px-6 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                            >
+                                {isSaving ? (
+                                    <Loader2 className="animate-spin" />
+                                ) : (
+                                    <Check />
+                                )}
+                                {isSaving ? "Saving..." : "Save image"}
+                            </Button>
+                        </div>
                     </div>
                 </div>
             ) : (
