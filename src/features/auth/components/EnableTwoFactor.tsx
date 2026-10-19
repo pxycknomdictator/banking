@@ -11,6 +11,7 @@ import {
     Card,
     CardContent,
     CardDescription,
+    CardFooter,
     CardHeader,
     CardTitle
 } from "@/components/ui/card";
@@ -38,6 +39,7 @@ import {
     twoFactorTOTPSchema,
     type TwoFactorTOTPSchema
 } from "@/features/auth/validators";
+import { InputPassword } from "@/features/auth/components/InputPassword";
 
 type SetupData = {
     totpURI: string;
@@ -156,7 +158,12 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                         <Label htmlFor="totp-uri">
                             Can&apos;t scan the code?
                         </Label>
-                        <Input id="totp-uri" value={setup.totpURI} readOnly />
+                        <Input
+                            id="totp-uri"
+                            value={setup.totpURI}
+                            readOnly
+                            className="py-5.75 pl-3"
+                        />
                     </div>
                     <div className="rounded-lg border p-4">
                         <p className="font-medium">Save your backup codes</p>
@@ -168,10 +175,9 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                             {setup.backupCodes.join(" ")}
                         </code>
                         <Button
-                            className="mt-3"
                             type="button"
-                            variant="outline"
                             onClick={copyBackupCodes}
+                            className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 mt-4"
                         >
                             Copy backup codes
                         </Button>
@@ -196,6 +202,7 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                                             autoComplete="one-time-code"
                                             maxLength={6}
                                             disabled={isLoading}
+                                            className="py-5.75 pl-3"
                                             onChange={(event) =>
                                                 field.onChange(
                                                     event.target.value.replace(
@@ -217,23 +224,27 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                         </FieldGroup>
                     </form>
                 </CardContent>
-                <div className="flex items-center gap-2 px-6 pb-6">
-                    <Button
-                        type="submit"
-                        form="verify-two-factor-form"
-                        disabled={isLoading}
-                    >
-                        {isLoading ? "Verifying..." : "Verify and enable"}
-                    </Button>
-                    <Button
-                        type="button"
-                        variant="ghost"
-                        disabled={isLoading}
-                        onClick={() => setSetup(null)}
-                    >
-                        Cancel
-                    </Button>
-                </div>
+                <CardFooter>
+                    <div className="w-full grid grid-cols-2 gap-x-3">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            disabled={isLoading}
+                            onClick={() => setSetup(null)}
+                            className="py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            form="verify-two-factor-form"
+                            disabled={isLoading}
+                            className="py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                        >
+                            {isLoading ? "Verifying..." : "Verify and enable"}
+                        </Button>
+                    </div>
+                </CardFooter>
             </Card>
         );
     }
@@ -253,7 +264,9 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                 >
                     <AlertDialogTrigger
                         render={
-                            <Button>Enable two-factor authentication</Button>
+                            <Button className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45">
+                                Enable two-factor authentication
+                            </Button>
                         }
                     />
                     <AlertDialogContent>
@@ -269,7 +282,6 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                         <form
                             id="enable-two-factor-form"
                             onSubmit={passwordForm.handleSubmit(beginSetup)}
-                            className="mt-6"
                         >
                             <FieldGroup>
                                 <Controller
@@ -282,10 +294,9 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                                             <FieldLabel htmlFor="two-factor-password">
                                                 Current password
                                             </FieldLabel>
-                                            <Input
+                                            <InputPassword
                                                 {...field}
                                                 id="two-factor-password"
-                                                type="password"
                                                 autoComplete="current-password"
                                                 disabled={isLoading}
                                                 aria-invalid={
@@ -303,16 +314,24 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                             </FieldGroup>
                         </form>
                         <AlertDialogFooter>
-                            <AlertDialogCancel disabled={isLoading}>
-                                Cancel
-                            </AlertDialogCancel>
-                            <AlertDialogAction
-                                type="submit"
-                                form="enable-two-factor-form"
-                                disabled={isLoading}
-                            >
-                                {isLoading ? "Starting setup..." : "Continue"}
-                            </AlertDialogAction>
+                            <div className="w-full grid grid-cols-2 gap-x-3">
+                                <AlertDialogCancel
+                                    disabled={isLoading}
+                                    className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                >
+                                    Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction
+                                    type="submit"
+                                    form="enable-two-factor-form"
+                                    disabled={isLoading}
+                                    className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                >
+                                    {isLoading
+                                        ? "Starting setup..."
+                                        : "Continue"}
+                                </AlertDialogAction>
+                            </div>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
