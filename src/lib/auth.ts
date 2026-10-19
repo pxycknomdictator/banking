@@ -110,7 +110,23 @@ export const auth = betterAuth({
             clientSecret: process.env.DISCORD_CLIENT_SECRET as string
         }
     },
-    plugins: [admin(), lastLoginMethod(), twoFactor(), passkey(), nextCookies()]
+    plugins: [
+        admin(),
+        lastLoginMethod(),
+        twoFactor({
+            otpOptions: {
+                async sendOTP({ user, otp }) {
+                    await sendEmail({
+                        to: user.email,
+                        subject: "Your two-factor authentication code",
+                        html: `Your verification code is <strong>${otp}</strong>.<br/><br/>This code expires soon.`
+                    });
+                }
+            }
+        }),
+        passkey(),
+        nextCookies()
+    ]
 });
 
 export type BetterAuthUser = typeof auth.$Infer.Session.user;

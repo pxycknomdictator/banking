@@ -46,6 +46,8 @@ type SetupData = {
     backupCodes: string[];
 };
 
+type TwoFactorMethod = "totp" | "otp";
+
 type EnableTwoFactorProps = {
     initiallyEnabled: boolean;
 };
@@ -55,6 +57,8 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
     const [isEnabled, setIsEnabled] = useState(initiallyEnabled);
     const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [selectedMethod, setSelectedMethod] =
+        useState<TwoFactorMethod>("totp");
 
     const passwordForm = useForm<{ password: string }>({
         resolver: zodResolver(passwordSchema),
@@ -66,17 +70,30 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
         defaultValues: { code: "", trustDevice: false }
     });
 
-    async function beginSetup({ password }: { password: string }) {
+    async function beginSetup({
+        password
+    }: {
+        password: string;
+    }) {
         setIsLoading(true);
         try {
             const { data, error } = await authClient.twoFactor.enable({
                 password,
-                method: "totp"
+                method: selectedMethod
             });
             if (error) throw new Error(error.message);
-            if (!data || data.method !== "totp") {
+            if (!data || data.method !== selectedMethod) {
                 throw new Error("Unable to start authenticator setup.");
             }
+
+            if (data.method === "otp") {
+                setIsEnabled(true);
+                setIsPasswordDialogOpen(false);
+                passwordForm.reset();
+                toast.success("Email OTP two-factor authentication enabled.");
+                return;
+            }
+
             setSetup({ totpURI: data.totpURI, backupCodes: data.backupCodes });
             setIsPasswordDialogOpen(false);
             passwordForm.reset();
@@ -144,8 +161,10 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                 <CardHeader>
                     <CardTitle>Two-factor authentication is enabled</CardTitle>
                     <CardDescription>
-                        Your account is protected by an authenticator app and
-                        backup codes.
+                        Your account is protected by{" "}
+                        {selectedMethod === "otp"
+                            ? "email verification codes."
+                            : "an authenticator app and backup codes."}
                     </CardDescription>
                 </CardHeader>
             </Card>
@@ -310,6 +329,57 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                             onSubmit={passwordForm.handleSubmit(beginSetup)}
                         >
                             <FieldGroup>
+                                <Field>
+                                    <FieldLabel>Verification method</FieldLabel>
+                                    <div className="grid gap-3 sm:grid-cols-2">
+                                        <Button
+                                            type="button"
+                                            variant={
+                                                selectedMethod === "totp"
+                                                    ? "default"
+                                                    : "outline"
+                                            }
+                                            onClick={() =>
+                                                setSelectedMethod("totp")
+                                            }
+                                            disabled={isLoading}
+                                            className="h-auto min-h-20 justify-start whitespace-normal text-left"
+                                        >
+                                            <span>
+                                                <span className="block font-semibold">
+                                                    Authenticator app
+                                                </span>
+                                                <span className="block text-xs font-normal opacity-80">
+                                                    Use a TOTP code from an
+                                                    authenticator app.
+                                                </span>
+                                            </span>
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant={
+                                                selectedMethod === "otp"
+                                                    ? "default"
+                                                    : "outline"
+                                            }
+                                            onClick={() =>
+                                                setSelectedMethod("otp")
+                                            }
+                                            disabled={isLoading}
+                                            className="h-auto min-h-20 justify-start whitespace-normal text-left"
+                                        >
+                                            <span>
+                                                <span className="block font-semibold">
+                                                    Email code
+                                                </span>
+                                                <span className="block text-xs font-normal opacity-80">
+                                                    Receive a one-time code by
+                                                    email.
+                                                </span>
+                                            </span>
+                                        </Button>
+                                    </div>
+                                </Field>
                                 <Controller
                                     name="password"
                                     control={passwordForm.control}
