@@ -23,6 +23,11 @@ export async function guestGuard(): Promise<void> {
     if (session) checkRoleAndRedirect(session);
 }
 
+export async function twoFactorGuard(): Promise<void> {
+    const session = await getSession();
+    if (session) checkRoleAndRedirect(session);
+}
+
 export async function getAuthenticatedSession(): Promise<BETTER_AUTH_DAL> {
     const webAppSession = await getSession();
     if (!webAppSession) redirect("/sign-in");
