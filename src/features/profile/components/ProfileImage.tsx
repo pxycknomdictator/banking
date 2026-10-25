@@ -168,7 +168,7 @@ export function ProfileImage({ name, image }: ProfileImageProps) {
                             {isSaving ? (
                                 <Loader2 className="animate-spin size-4" />
                             ) : (
-                                <Trash2 className="size-4" />
+                                <Trash2 className="size-4 text-destructive" />
                             )}
                         </Button>
                     )}
