@@ -31,10 +31,42 @@ function fileToDataUrl(file: File): Promise<string> {
     });
 }
 
-function createCroppedImage(image: string, crop: Area): Promise<string> {
+function createCroppedImage(
+    image: string,
+    crop: Area,
+    rotation: number
+): Promise<string> {
     return new Promise((resolve, reject) => {
         const source = new window.Image();
         source.onload = () => {
+            const radians = (rotation * Math.PI) / 180;
+            const rotatedCanvas = document.createElement("canvas");
+            const rotatedWidth =
+                Math.abs(Math.cos(radians) * source.naturalWidth) +
+                Math.abs(Math.sin(radians) * source.naturalHeight);
+            const rotatedHeight =
+                Math.abs(Math.sin(radians) * source.naturalWidth) +
+                Math.abs(Math.cos(radians) * source.naturalHeight);
+            rotatedCanvas.width = Math.round(rotatedWidth);
+            rotatedCanvas.height = Math.round(rotatedHeight);
+
+            const rotatedContext = rotatedCanvas.getContext("2d");
+            if (!rotatedContext) {
+                reject(new Error("Could not prepare the cropped image."));
+                return;
+            }
+
+            rotatedContext.translate(
+                rotatedCanvas.width / 2,
+                rotatedCanvas.height / 2
+            );
+            rotatedContext.rotate(radians);
+            rotatedContext.drawImage(
+                source,
+                -source.naturalWidth / 2,
+                -source.naturalHeight / 2
+            );
+
             const canvas = document.createElement("canvas");
             canvas.width = crop.width;
             canvas.height = crop.height;
@@ -45,7 +77,7 @@ function createCroppedImage(image: string, crop: Area): Promise<string> {
             }
 
             context.drawImage(
-                source,
+                rotatedCanvas,
                 crop.x,
                 crop.y,
                 crop.width,
@@ -70,6 +102,7 @@ export function ProfileImage({ name, image }: ProfileImageProps) {
     const [cropSource, setCropSource] = useState("");
     const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
     const [zoom, setZoom] = useState(1);
+    const [rotation, setRotation] = useState(0);
     const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(
         null
     );
@@ -86,6 +119,7 @@ export function ProfileImage({ name, image }: ProfileImageProps) {
         setCropSource("");
         setCrop({ x: 0, y: 0 });
         setZoom(1);
+        setRotation(0);
         setCroppedAreaPixels(null);
     }
 
@@ -125,7 +159,8 @@ export function ProfileImage({ name, image }: ProfileImageProps) {
         try {
             const croppedImage = await createCroppedImage(
                 cropSource,
-                croppedAreaPixels
+                croppedAreaPixels,
+                rotation
             );
             const { error } = await authClient.updateUser({
                 image: croppedImage
@@ -182,8 +217,8 @@ export function ProfileImage({ name, image }: ProfileImageProps) {
                     <div>
                         <p className="font-medium">Preview and crop</p>
                         <p className="text-sm text-muted-foreground">
-                            Drag the image and use the slider to frame your
-                            avatar.
+                            Drag the image and use the sliders to frame and
+                            rotate your avatar.
                         </p>
                     </div>
                     <div className="relative mx-auto size-70 overflow-hidden rounded-lg bg-black">
@@ -191,6 +226,7 @@ export function ProfileImage({ name, image }: ProfileImageProps) {
                             image={cropSource}
                             crop={crop}
                             zoom={zoom}
+                            rotation={rotation}
                             aspect={1}
                             cropShape="rect"
                             showGrid
@@ -220,6 +256,32 @@ export function ProfileImage({ name, image }: ProfileImageProps) {
                                 setZoom(Number(event.target.value))
                             }
                             className="w-full accent-primary"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                            <label
+                                htmlFor="profile-image-rotation"
+                                className="text-sm font-medium"
+                            >
+                                Rotation
+                            </label>
+                            <span className="text-sm text-muted-foreground">
+                                {rotation}°
+                            </span>
+                        </div>
+                        <input
+                            id="profile-image-rotation"
+                            type="range"
+                            min={-180}
+                            max={180}
+                            step={1}
+                            value={rotation}
+                            onChange={(event) =>
+                                setRotation(Number(event.target.value))
+                            }
+                            disabled={isSaving}
+                            className="w-full accent-primary disabled:opacity-45"
                         />
                     </div>
                     <div className="md:flex md:justify-end">
