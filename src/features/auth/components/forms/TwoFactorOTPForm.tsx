@@ -187,7 +187,7 @@ export function TwoFactorOTPForm() {
                     </Button>
                     <div className="my-4 text-center">
                         <span className="font-normal">
-                            Didn't receive the code?
+                            Didn&apos;t receive the code?
                         </span>{" "}
                         <Link
                             href="/two-factor/verify-totp"
