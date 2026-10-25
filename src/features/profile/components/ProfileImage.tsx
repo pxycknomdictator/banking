@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Cropper, { type Area, type Point } from "react-easy-crop";
-import { Camera, Check, Loader2, X } from "lucide-react";
+import { Camera, Check, Loader2, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
@@ -187,21 +187,67 @@ export function ProfileImage({ name, image }: ProfileImageProps) {
         }
     }
 
+    async function deleteProfileImage() {
+        setIsSaving(true);
+        try {
+            const { error } = await authClient.updateUser({ image: null });
+            if (error) {
+                toast.error(
+                    error.message || "Could not delete your profile image."
+                );
+                return;
+            }
+
+            setPreview("");
+            resetCrop();
+            toast.success("Profile image deleted.");
+            router.refresh();
+        } catch (error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Could not delete your profile image."
+            );
+        } finally {
+            setIsSaving(false);
+        }
+    }
+
     return (
         <div className="space-y-5">
             <div className="flex items-center gap-4">
-                <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-xl font-medium text-muted-foreground">
-                    {preview ? (
-                        <Image
-                            src={preview}
-                            alt={`${name}'s profile image`}
-                            width={80}
-                            height={80}
-                            unoptimized
-                            className="size-full object-cover"
-                        />
-                    ) : (
-                        initials || "?"
+                <div className="flex items-center gap-2 relative">
+                    <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-full bg-muted text-xl font-medium text-muted-foreground">
+                        {preview ? (
+                            <Image
+                                src={preview}
+                                alt={`${name}'s profile image`}
+                                width={80}
+                                height={80}
+                                unoptimized
+                                className="size-full object-cover"
+                            />
+                        ) : (
+                            initials || "?"
+                        )}
+                    </div>
+                    {preview && (
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            size="icon"
+                            onClick={deleteProfileImage}
+                            disabled={isSaving}
+                            aria-label="Delete profile image"
+                            title="Delete profile image"
+                            className="cursor-pointer rounded-full disabled:cursor-not-allowed disabled:opacity-45 absolute -top-2 -right-2"
+                        >
+                            {isSaving ? (
+                                <Loader2 className="animate-spin size-4" />
+                            ) : (
+                                <Trash2 className="size-4" />
+                            )}
+                        </Button>
                     )}
                 </div>
                 <div>
