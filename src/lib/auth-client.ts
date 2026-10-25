@@ -11,16 +11,7 @@ export const authClient = createAuthClient({
     plugins: [
         adminClient(),
         lastLoginMethodClient(),
-        twoFactorClient({
-            onTwoFactorRedirect: async ({ twoFactorMethods }) => {
-                if (twoFactorMethods?.includes("otp")) {
-                    await authClient.twoFactor.sendOtp();
-                    window.location.pathname = "/two-factor/verify-otp";
-                    return;
-                }
-                window.location.pathname = "/two-factor/verify-totp";
-            }
-        }),
+        twoFactorClient(),
         passkeyClient()
     ]
 });

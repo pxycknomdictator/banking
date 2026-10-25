@@ -47,6 +47,17 @@ export function SignInForm() {
             });
             if (error) throw new Error(error.message);
             if (data && "twoFactorRedirect" in data) {
+                const methods =
+                    "twoFactorMethods" in data &&
+                    Array.isArray(data.twoFactorMethods)
+                        ? data.twoFactorMethods
+                        : [];
+                if (methods.includes("totp")) {
+                    router.push("/two-factor/verify-totp");
+                } else if (methods.includes("otp")) {
+                    await authClient.twoFactor.sendOtp();
+                    router.push("/two-factor/verify-otp");
+                }
                 return;
             }
             toast.success("Signed in successfully!");
