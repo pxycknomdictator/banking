@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
@@ -142,19 +143,32 @@ export function TwoFactorTOTPForm() {
                 </form>
             </CardContent>
             <CardFooter>
-                <Button
-                    type="submit"
-                    form="two-factor-totp-form"
-                    disabled={isLoading}
-                    className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
-                >
-                    {isLoading ? (
-                        <Loader className="size-4.5 animate-[spin_2s_linear_infinite]" />
-                    ) : (
-                        <Shield className="size-4.5" />
-                    )}
-                    Verify code
-                </Button>
+                <section className="w-full">
+                    <Button
+                        type="submit"
+                        form="two-factor-totp-form"
+                        disabled={isLoading}
+                        className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                    >
+                        {isLoading ? (
+                            <Loader className="size-4.5 animate-[spin_2s_linear_infinite]" />
+                        ) : (
+                            <Shield className="size-4.5" />
+                        )}
+                        Verify code
+                    </Button>
+                    <div className="my-4 text-center">
+                        <span className="font-normal">
+                            Don&apos;t have access to authentication?
+                        </span>{" "}
+                        <Link
+                            href="/two-factor/recovery-code"
+                            className="font-medium hover:underline"
+                        >
+                            Recovery code
+                        </Link>
+                    </div>
+                </section>
             </CardFooter>
         </FormWrapper>
     );

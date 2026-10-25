@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
@@ -170,19 +171,32 @@ export function TwoFactorOTPForm() {
                 </form>
             </CardContent>
             <CardFooter>
-                <Button
-                    type="submit"
-                    form="two-factor-otp-form"
-                    disabled={isLoading || isResending}
-                    className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
-                >
-                    {isLoading ? (
-                        <Loader className="size-4.5 animate-[spin_2s_linear_infinite]" />
-                    ) : (
-                        <Shield className="size-4.5" />
-                    )}
-                    Verify code
-                </Button>
+                <section className="w-full">
+                    <Button
+                        type="submit"
+                        form="two-factor-otp-form"
+                        disabled={isLoading || isResending}
+                        className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                    >
+                        {isLoading ? (
+                            <Loader className="size-4.5 animate-[spin_2s_linear_infinite]" />
+                        ) : (
+                            <Shield className="size-4.5" />
+                        )}
+                        Verify code
+                    </Button>
+                    <div className="my-4 text-center">
+                        <span className="font-normal">
+                            Didn't receive the code?
+                        </span>{" "}
+                        <Link
+                            href="/two-factor/verify-totp"
+                            className="font-medium hover:underline"
+                        >
+                            Authenticator
+                        </Link>
+                    </div>
+                </section>
             </CardFooter>
         </FormWrapper>
     );
