@@ -6,8 +6,7 @@ import {
     Loader2,
     Mail,
     MailCheck,
-    ShieldCheck,
-    ArrowUpRight
+    ShieldCheck
 } from "lucide-react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
@@ -121,7 +120,7 @@ export function EmailVerification({
                             type="button"
                             onClick={sendVerificationEmail}
                             disabled={isSending}
-                            className="h-10 w-full shrink-0 gap-2 rounded-xl px-4 font-medium shadow-sm sm:w-auto sm:min-w-43.75"
+                            className="py-6 px-5 gap-x-2 font-medium cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                         >
                             {isSending ? (
                                 <Loader2 className="size-4 animate-spin" />
@@ -129,9 +128,6 @@ export function EmailVerification({
                                 <MailCheck className="size-4" />
                             )}
                             {isSending ? "Sending email..." : "Verify email"}
-                            {!isSending && (
-                                <ArrowUpRight className="size-4 opacity-70" />
-                            )}
                         </Button>
                     )}
                 </div>
