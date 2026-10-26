@@ -75,7 +75,7 @@ export function TwoFactorTOTPForm() {
                     id="two-factor-totp-form"
                     onSubmit={form.handleSubmit(onSubmit)}
                 >
-                    <FieldGroup>
+                    <FieldGroup className="-space-y-2">
                         <Controller
                             name="code"
                             control={form.control}
@@ -126,14 +126,20 @@ export function TwoFactorTOTPForm() {
                             name="trustDevice"
                             control={form.control}
                             render={({ field }) => (
-                                <Field orientation="horizontal">
+                                <Field
+                                    orientation="horizontal"
+                                    className="w-fit hover:cursor-pointer"
+                                >
                                     <Checkbox
-                                        id="trust-device"
+                                        id="totp-trust-device"
                                         checked={field.value}
                                         onCheckedChange={field.onChange}
                                         disabled={isLoading}
                                     />
-                                    <FieldLabel htmlFor="trust-device">
+                                    <FieldLabel
+                                        htmlFor="totp-trust-device"
+                                        className="hover:cursor-pointer"
+                                    >
                                         Trust this device
                                     </FieldLabel>
                                 </Field>

@@ -7,7 +7,7 @@ import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { Loader, Mail, Shield } from "lucide-react";
+import { Loader, Mail, Shield, RotateCcw } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { getDashboardPath } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -94,7 +94,7 @@ export function TwoFactorOTPForm() {
                     id="two-factor-otp-form"
                     onSubmit={form.handleSubmit(onSubmit)}
                 >
-                    <FieldGroup>
+                    <FieldGroup className="-space-y-2">
                         <Controller
                             name="code"
                             control={form.control}
@@ -145,14 +145,20 @@ export function TwoFactorOTPForm() {
                             name="trustDevice"
                             control={form.control}
                             render={({ field }) => (
-                                <Field orientation="horizontal">
+                                <Field
+                                    orientation="horizontal"
+                                    className="w-fit hover:cursor-pointer"
+                                >
                                     <Checkbox
                                         id="otp-trust-device"
                                         checked={field.value}
                                         onCheckedChange={field.onChange}
                                         disabled={isLoading || isResending}
                                     />
-                                    <FieldLabel htmlFor="otp-trust-device">
+                                    <FieldLabel
+                                        htmlFor="otp-trust-device"
+                                        className="hover:cursor-pointer"
+                                    >
                                         Trust this device
                                     </FieldLabel>
                                 </Field>
@@ -160,11 +166,16 @@ export function TwoFactorOTPForm() {
                         />
                         <Button
                             type="button"
-                            variant="link"
+                            variant="outline"
                             onClick={resendCode}
                             disabled={isLoading || isResending}
-                            className="w-fit self-center cursor-pointer"
+                            className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                         >
+                            {isResending ? (
+                                <Loader className="size-4.5 animate-[spin_2s_linear_infinite]" />
+                            ) : (
+                                <RotateCcw className="size-4.5" />
+                            )}
                             {isResending ? "Sending..." : "Resend code"}
                         </Button>
                     </FieldGroup>
