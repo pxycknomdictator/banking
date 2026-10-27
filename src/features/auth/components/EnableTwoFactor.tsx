@@ -5,6 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { KeyRound } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import {
@@ -56,6 +57,7 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
     const [setup, setSetup] = useState<SetupData | null>(null);
     const [isEnabled, setIsEnabled] = useState(initiallyEnabled);
     const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
+    const [isRegenerateDialogOpen, setIsRegenerateDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedMethod, setSelectedMethod] =
         useState<TwoFactorMethod>("totp");
@@ -125,20 +127,47 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
         }
     }
 
-    async function copyBackupCodes() {
-        if (!setup) return;
+    async function regenerateBackupCodes({ password }: { password: string }) {
+        setIsLoading(true);
         try {
-            await navigator.clipboard.writeText(setup.backupCodes.join("\n"));
+            const { data, error } =
+                await authClient.twoFactor.generateBackupCodes({
+                    password
+                });
+            if (error) throw new Error(error.message);
+            if (!data?.backupCodes?.length) {
+                throw new Error("Unable to generate backup codes.");
+            }
+
+            setIsRegenerateDialogOpen(false);
+            passwordForm.reset();
+            setSetup({ totpURI: "", backupCodes: data.backupCodes });
+            toast.success("New backup codes generated.");
+        } catch (error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Unable to generate backup codes."
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    async function copyBackupCodes(codes = setup?.backupCodes) {
+        if (!codes) return;
+        try {
+            await navigator.clipboard.writeText(codes.join("\n"));
             toast.success("Backup codes copied.");
         } catch {
             toast.error("Unable to copy backup codes. Save them manually.");
         }
     }
 
-    function downloadBackupCodes() {
-        if (!setup) return;
+    function downloadBackupCodes(codes = setup?.backupCodes) {
+        if (!codes) return;
 
-        const file = new Blob([setup.backupCodes.join("\n")], {
+        const file = new Blob([codes.join("\n")], {
             type: "text/plain;charset=utf-8"
         });
         const url = URL.createObjectURL(file);
@@ -163,6 +192,132 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                             : "an authenticator app and backup codes."}
                     </CardDescription>
                 </CardHeader>
+                <CardContent>
+                    <AlertDialog
+                        open={isRegenerateDialogOpen}
+                        onOpenChange={(open) => {
+                            setIsRegenerateDialogOpen(open);
+                            if (!open) passwordForm.reset();
+                        }}
+                    >
+                        <AlertDialogTrigger
+                            render={
+                                <Button
+                                    variant="outline"
+                                    className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                >
+                                    <KeyRound className="size-4.5" />
+                                    Regenerate backup codes
+                                </Button>
+                            }
+                        />
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Regenerate backup codes?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    Your current backup codes will stop working
+                                    immediately. Enter your password to generate
+                                    a new set.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <form
+                                id="regenerate-backup-codes-form"
+                                onSubmit={passwordForm.handleSubmit(
+                                    regenerateBackupCodes
+                                )}
+                            >
+                                <FieldGroup>
+                                    <Controller
+                                        name="password"
+                                        control={passwordForm.control}
+                                        render={({ field, fieldState }) => (
+                                            <Field
+                                                data-invalid={
+                                                    fieldState.invalid
+                                                }
+                                            >
+                                                <FieldLabel htmlFor="regenerate-backup-codes-password">
+                                                    Current password
+                                                </FieldLabel>
+                                                <InputPassword
+                                                    {...field}
+                                                    id="regenerate-backup-codes-password"
+                                                    autoComplete="current-password"
+                                                    disabled={isLoading}
+                                                    aria-invalid={
+                                                        fieldState.invalid
+                                                    }
+                                                />
+                                                {fieldState.invalid && (
+                                                    <FieldError
+                                                        errors={[
+                                                            fieldState.error
+                                                        ]}
+                                                    />
+                                                )}
+                                            </Field>
+                                        )}
+                                    />
+                                </FieldGroup>
+                            </form>
+                            <AlertDialogFooter>
+                                <div className="w-full grid gap-y-3 md:grid-cols-2 gap-x-3">
+                                    <AlertDialogCancel
+                                        disabled={isLoading}
+                                        className="order-2 md:order-1 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                    >
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                        type="submit"
+                                        form="regenerate-backup-codes-form"
+                                        disabled={isLoading}
+                                        className="order-1 md:order-2 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                    >
+                                        {isLoading
+                                            ? "Generating..."
+                                            : "Regenerate codes"}
+                                    </AlertDialogAction>
+                                </div>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                    {setup && (
+                        <div className="mt-4 rounded-lg border p-4">
+                            <p className="font-medium">Your new backup codes</p>
+                            <p className="mt-1 text-sm text-muted-foreground">
+                                Your previous backup codes are no longer valid.
+                                Save these codes securely.
+                            </p>
+                            <code className="mt-3 block break-all text-sm">
+                                {setup.backupCodes.join(" ")}
+                            </code>
+                            <div className="mt-4 grid gap-3 md:grid-cols-2">
+                                <Button
+                                    type="button"
+                                    onClick={() =>
+                                        copyBackupCodes(setup.backupCodes)
+                                    }
+                                    className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                >
+                                    Copy backup codes
+                                </Button>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={() =>
+                                        downloadBackupCodes(setup.backupCodes)
+                                    }
+                                    className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                >
+                                    Download backup codes
+                                </Button>
+                            </div>
+                        </div>
+                    )}
+                </CardContent>
             </Card>
         );
     }
@@ -178,29 +333,38 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                     </CardDescription>
                 </CardHeader>
                 <CardContent className="gap-5">
-                    <div className="flex justify-center rounded-lg bg-white p-4">
-                        <QRCodeSVG
-                            value={setup.totpURI}
-                            size={192}
-                            aria-label="Two-factor authentication QR code"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="totp-uri">
-                            Can&apos;t scan the code?
-                        </Label>
-                        <Input
-                            id="totp-uri"
-                            value={setup.totpURI}
-                            readOnly
-                            className="py-5.75 pl-3"
-                        />
-                    </div>
+                    {setup.totpURI && (
+                        <>
+                            <div className="flex justify-center rounded-lg bg-white p-4">
+                                <QRCodeSVG
+                                    value={setup.totpURI}
+                                    size={192}
+                                    aria-label="Two-factor authentication QR code"
+                                />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="totp-uri">
+                                    Can&apos;t scan the code?
+                                </Label>
+                                <Input
+                                    id="totp-uri"
+                                    value={setup.totpURI}
+                                    readOnly
+                                    className="py-5.75 pl-3"
+                                />
+                            </div>
+                        </>
+                    )}
                     <div className="rounded-lg border p-4">
-                        <p className="font-medium">Save your backup codes</p>
+                        <p className="font-medium">
+                            {setup.totpURI
+                                ? "Save your backup codes"
+                                : "Your new backup codes"}
+                        </p>
                         <p className="mt-1 text-sm text-muted-foreground">
-                            Each code can be used once if you lose access to
-                            your authenticator app.
+                            {setup.totpURI
+                                ? "Each code can be used once if you lose access to your authenticator app."
+                                : "Your previous backup codes are no longer valid. Save these codes securely."}
                         </p>
                         <code className="mt-3 block break-all text-sm">
                             {setup.backupCodes.join(" ")}
@@ -208,7 +372,7 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                         <div className="mt-4 grid gap-3 md:grid-cols-2">
                             <Button
                                 type="button"
-                                onClick={copyBackupCodes}
+                                onClick={() => copyBackupCodes()}
                                 className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                             >
                                 Copy backup codes
@@ -216,7 +380,7 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                             <Button
                                 type="button"
                                 variant="outline"
-                                onClick={downloadBackupCodes}
+                                onClick={() => downloadBackupCodes()}
                                 className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                             >
                                 Download recovery codes
