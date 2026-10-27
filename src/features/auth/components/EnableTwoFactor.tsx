@@ -5,7 +5,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
-import { KeyRound } from "lucide-react";
+import { KeyRound, ShieldOff } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import {
@@ -62,6 +62,7 @@ export function EnableTwoFactor({
     const [isEnabled, setIsEnabled] = useState(initiallyEnabled);
     const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
     const [isRegenerateDialogOpen, setIsRegenerateDialogOpen] = useState(false);
+    const [isDisableDialogOpen, setIsDisableDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedMethod, setSelectedMethod] = useState<TwoFactorMethod>(
         initiallySelectedMethod
@@ -153,6 +154,29 @@ export function EnableTwoFactor({
                 error instanceof Error
                     ? error.message
                     : "Unable to generate backup codes."
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    async function disableTwoFactor({ password }: { password: string }) {
+        setIsLoading(true);
+        try {
+            const { error } = await authClient.twoFactor.disable({ password });
+            if (error) throw new Error(error.message);
+
+            setIsDisableDialogOpen(false);
+            passwordForm.reset();
+            setIsEnabled(false);
+            setSetup(null);
+            setSelectedMethod("totp");
+            toast.success("Two-factor authentication disabled.");
+        } catch (error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Unable to disable two-factor authentication."
             );
         } finally {
             setIsLoading(false);
@@ -329,6 +353,100 @@ export function EnableTwoFactor({
                         )}
                     </CardContent>
                 )}
+                <CardFooter>
+                    <AlertDialog
+                        open={isDisableDialogOpen}
+                        onOpenChange={(open) => {
+                            setIsDisableDialogOpen(open);
+                            if (!open) passwordForm.reset();
+                        }}
+                    >
+                        <AlertDialogTrigger
+                            render={
+                                <Button
+                                    variant="destructive"
+                                    className="w-full py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                >
+                                    <ShieldOff className="size-4.5" />
+                                    Disable two-factor authentication
+                                </Button>
+                            }
+                        />
+                        <AlertDialogContent>
+                            <AlertDialogHeader>
+                                <AlertDialogTitle>
+                                    Disable two-factor authentication?
+                                </AlertDialogTitle>
+                                <AlertDialogDescription>
+                                    This will remove two-factor protection from
+                                    your account and invalidate your backup
+                                    codes. Enter your password to continue.
+                                </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <form
+                                id="disable-two-factor-form"
+                                onSubmit={passwordForm.handleSubmit(
+                                    disableTwoFactor
+                                )}
+                            >
+                                <FieldGroup>
+                                    <Controller
+                                        name="password"
+                                        control={passwordForm.control}
+                                        render={({ field, fieldState }) => (
+                                            <Field
+                                                data-invalid={
+                                                    fieldState.invalid
+                                                }
+                                            >
+                                                <FieldLabel htmlFor="disable-two-factor-password">
+                                                    Current password
+                                                </FieldLabel>
+                                                <InputPassword
+                                                    {...field}
+                                                    id="disable-two-factor-password"
+                                                    autoComplete="current-password"
+                                                    disabled={isLoading}
+                                                    aria-invalid={
+                                                        fieldState.invalid
+                                                    }
+                                                />
+                                                {fieldState.invalid && (
+                                                    <FieldError
+                                                        errors={[
+                                                            fieldState.error
+                                                        ]}
+                                                    />
+                                                )}
+                                            </Field>
+                                        )}
+                                    />
+                                </FieldGroup>
+                            </form>
+                            <AlertDialogFooter>
+                                <div className="w-full grid gap-y-3 md:grid-cols-2 gap-x-3">
+                                    <AlertDialogCancel
+                                        disabled={isLoading}
+                                        className="order-2 md:order-1 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                    >
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                        type="submit"
+                                        form="disable-two-factor-form"
+                                        disabled={isLoading}
+                                        variant="destructive"
+                                        className="order-1 md:order-2 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                    >
+                                        {isLoading
+                                            ? "Disabling..."
+                                            : "Disable two-factor"}
+                                    </AlertDialogAction>
+                                </div>
+                            </AlertDialogFooter>
+                        </AlertDialogContent>
+                    </AlertDialog>
+                </CardFooter>
             </Card>
         );
     }
