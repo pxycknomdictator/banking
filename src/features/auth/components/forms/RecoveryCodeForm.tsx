@@ -85,25 +85,28 @@ export function RecoveryCodeForm() {
                                         {...field}
                                         id="two-factor-recovery-code"
                                         type="text"
-                                        inputMode="numeric"
-                                        pattern="[0-9]*"
-                                        maxLength={10}
+                                        inputMode="text"
+                                        pattern="[A-Za-z0-9]{5}-[A-Za-z0-9]{5}"
+                                        maxLength={11}
                                         autoComplete="one-time-code"
                                         disabled={isLoading}
                                         className="py-5.75 pl-3"
                                         onChange={(event) =>
                                             field.onChange(
                                                 event.target.value
-                                                    .replace(/\D/g, "")
-                                                    .slice(0, 10)
+                                                    .replace(
+                                                        /[^A-Za-z0-9-]/g,
+                                                        ""
+                                                    )
+                                                    .slice(0, 11)
                                             )
                                         }
                                         aria-invalid={fieldState.invalid}
                                     />
                                     <FieldDescription>
-                                        Enter the 10-digit recovery code you
-                                        saved when setting up two-factor
-                                        authentication.
+                                        Enter the recovery code you saved when
+                                        setting up two-factor authentication
+                                        (for example, 5uiQr-d5oUX).
                                     </FieldDescription>
                                     {fieldState.invalid && (
                                         <FieldError

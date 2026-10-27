@@ -83,8 +83,12 @@ export const twoFactorTOTPSchema = z.strictObject({
 export const twoFactorRecoveryCodeSchema = z.strictObject({
     code: z
         .string()
-        .length(10, { error: "Recovery code must be 10 digits" })
-        .regex(/^\d{10}$/, { error: "Recovery code must contain only digits" }),
+        .length(11, {
+            error: "Recovery code must be 11 characters"
+        })
+        .regex(/^[A-Za-z0-9]{5}-[A-Za-z0-9]{5}$/, {
+            error: "Recovery code must use the format XXXXX-XXXXX"
+        }),
     trustDevice: twoFactorOTPSchema.shape.trustDevice
 });
 
