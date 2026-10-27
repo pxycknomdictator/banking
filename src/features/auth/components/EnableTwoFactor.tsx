@@ -63,8 +63,9 @@ export function EnableTwoFactor({
     const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
     const [isRegenerateDialogOpen, setIsRegenerateDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [selectedMethod, setSelectedMethod] =
-        useState<TwoFactorMethod>(initiallySelectedMethod);
+    const [selectedMethod, setSelectedMethod] = useState<TwoFactorMethod>(
+        initiallySelectedMethod
+    );
 
     const passwordForm = useForm<{ password: string }>({
         resolver: zodResolver(passwordSchema),
@@ -237,10 +238,7 @@ export function EnableTwoFactor({
                                         <Controller
                                             name="password"
                                             control={passwordForm.control}
-                                            render={({
-                                                field,
-                                                fieldState
-                                            }) => (
+                                            render={({ field, fieldState }) => (
                                                 <Field
                                                     data-invalid={
                                                         fieldState.invalid
