@@ -51,16 +51,20 @@ type TwoFactorMethod = "totp" | "otp";
 
 type EnableTwoFactorProps = {
     initiallyEnabled: boolean;
+    initiallySelectedMethod: TwoFactorMethod;
 };
 
-export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
+export function EnableTwoFactor({
+    initiallyEnabled,
+    initiallySelectedMethod
+}: EnableTwoFactorProps) {
     const [setup, setSetup] = useState<SetupData | null>(null);
     const [isEnabled, setIsEnabled] = useState(initiallyEnabled);
     const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
     const [isRegenerateDialogOpen, setIsRegenerateDialogOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [selectedMethod, setSelectedMethod] =
-        useState<TwoFactorMethod>("totp");
+        useState<TwoFactorMethod>(initiallySelectedMethod);
 
     const passwordForm = useForm<{ password: string }>({
         resolver: zodResolver(passwordSchema),
@@ -192,132 +196,141 @@ export function EnableTwoFactor({ initiallyEnabled }: EnableTwoFactorProps) {
                             : "an authenticator app and backup codes."}
                     </CardDescription>
                 </CardHeader>
-                <CardContent>
-                    <AlertDialog
-                        open={isRegenerateDialogOpen}
-                        onOpenChange={(open) => {
-                            setIsRegenerateDialogOpen(open);
-                            if (!open) passwordForm.reset();
-                        }}
-                    >
-                        <AlertDialogTrigger
-                            render={
-                                <Button
-                                    variant="outline"
-                                    className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                {selectedMethod === "totp" && (
+                    <CardContent>
+                        <AlertDialog
+                            open={isRegenerateDialogOpen}
+                            onOpenChange={(open) => {
+                                setIsRegenerateDialogOpen(open);
+                                if (!open) passwordForm.reset();
+                            }}
+                        >
+                            <AlertDialogTrigger
+                                render={
+                                    <Button
+                                        variant="outline"
+                                        className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                    >
+                                        <KeyRound className="size-4.5" />
+                                        Regenerate backup codes
+                                    </Button>
+                                }
+                            />
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Regenerate backup codes?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        Your current backup codes will stop
+                                        working immediately. Enter your password
+                                        to generate a new set.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <form
+                                    id="regenerate-backup-codes-form"
+                                    onSubmit={passwordForm.handleSubmit(
+                                        regenerateBackupCodes
+                                    )}
                                 >
-                                    <KeyRound className="size-4.5" />
-                                    Regenerate backup codes
-                                </Button>
-                            }
-                        />
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    Regenerate backup codes?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    Your current backup codes will stop working
-                                    immediately. Enter your password to generate
-                                    a new set.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <form
-                                id="regenerate-backup-codes-form"
-                                onSubmit={passwordForm.handleSubmit(
-                                    regenerateBackupCodes
-                                )}
-                            >
-                                <FieldGroup>
-                                    <Controller
-                                        name="password"
-                                        control={passwordForm.control}
-                                        render={({ field, fieldState }) => (
-                                            <Field
-                                                data-invalid={
-                                                    fieldState.invalid
-                                                }
-                                            >
-                                                <FieldLabel htmlFor="regenerate-backup-codes-password">
-                                                    Current password
-                                                </FieldLabel>
-                                                <InputPassword
-                                                    {...field}
-                                                    id="regenerate-backup-codes-password"
-                                                    autoComplete="current-password"
-                                                    disabled={isLoading}
-                                                    aria-invalid={
+                                    <FieldGroup>
+                                        <Controller
+                                            name="password"
+                                            control={passwordForm.control}
+                                            render={({
+                                                field,
+                                                fieldState
+                                            }) => (
+                                                <Field
+                                                    data-invalid={
                                                         fieldState.invalid
                                                     }
-                                                />
-                                                {fieldState.invalid && (
-                                                    <FieldError
-                                                        errors={[
-                                                            fieldState.error
-                                                        ]}
+                                                >
+                                                    <FieldLabel htmlFor="regenerate-backup-codes-password">
+                                                        Current password
+                                                    </FieldLabel>
+                                                    <InputPassword
+                                                        {...field}
+                                                        id="regenerate-backup-codes-password"
+                                                        autoComplete="current-password"
+                                                        disabled={isLoading}
+                                                        aria-invalid={
+                                                            fieldState.invalid
+                                                        }
                                                     />
-                                                )}
-                                            </Field>
-                                        )}
-                                    />
-                                </FieldGroup>
-                            </form>
-                            <AlertDialogFooter>
-                                <div className="w-full grid gap-y-3 md:grid-cols-2 gap-x-3">
-                                    <AlertDialogCancel
-                                        disabled={isLoading}
-                                        className="order-2 md:order-1 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                                    {fieldState.invalid && (
+                                                        <FieldError
+                                                            errors={[
+                                                                fieldState.error
+                                                            ]}
+                                                        />
+                                                    )}
+                                                </Field>
+                                            )}
+                                        />
+                                    </FieldGroup>
+                                </form>
+                                <AlertDialogFooter>
+                                    <div className="w-full grid gap-y-3 md:grid-cols-2 gap-x-3">
+                                        <AlertDialogCancel
+                                            disabled={isLoading}
+                                            className="order-2 md:order-1 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                        >
+                                            Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            type="submit"
+                                            form="regenerate-backup-codes-form"
+                                            disabled={isLoading}
+                                            className="order-1 md:order-2 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                        >
+                                            {isLoading
+                                                ? "Generating..."
+                                                : "Regenerate codes"}
+                                        </AlertDialogAction>
+                                    </div>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                        {setup && (
+                            <div className="mt-4 rounded-lg border p-4">
+                                <p className="font-medium">
+                                    Your new backup codes
+                                </p>
+                                <p className="mt-1 text-sm text-muted-foreground">
+                                    Your previous backup codes are no longer
+                                    valid. Save these codes securely.
+                                </p>
+                                <code className="mt-3 block break-all text-sm">
+                                    {setup.backupCodes.join(" ")}
+                                </code>
+                                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                                    <Button
+                                        type="button"
+                                        onClick={() =>
+                                            copyBackupCodes(setup.backupCodes)
+                                        }
+                                        className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                                     >
-                                        Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                        type="submit"
-                                        form="regenerate-backup-codes-form"
-                                        disabled={isLoading}
-                                        className="order-1 md:order-2 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                        Copy backup codes
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() =>
+                                            downloadBackupCodes(
+                                                setup.backupCodes
+                                            )
+                                        }
+                                        className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                                     >
-                                        {isLoading
-                                            ? "Generating..."
-                                            : "Regenerate codes"}
-                                    </AlertDialogAction>
+                                        Download backup codes
+                                    </Button>
                                 </div>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                    {setup && (
-                        <div className="mt-4 rounded-lg border p-4">
-                            <p className="font-medium">Your new backup codes</p>
-                            <p className="mt-1 text-sm text-muted-foreground">
-                                Your previous backup codes are no longer valid.
-                                Save these codes securely.
-                            </p>
-                            <code className="mt-3 block break-all text-sm">
-                                {setup.backupCodes.join(" ")}
-                            </code>
-                            <div className="mt-4 grid gap-3 md:grid-cols-2">
-                                <Button
-                                    type="button"
-                                    onClick={() =>
-                                        copyBackupCodes(setup.backupCodes)
-                                    }
-                                    className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
-                                >
-                                    Copy backup codes
-                                </Button>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() =>
-                                        downloadBackupCodes(setup.backupCodes)
-                                    }
-                                    className="w-full py-7 font-semibold gap-x-2.5 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
-                                >
-                                    Download backup codes
-                                </Button>
                             </div>
-                        </div>
-                    )}
-                </CardContent>
+                        )}
+                    </CardContent>
+                )}
             </Card>
         );
     }
