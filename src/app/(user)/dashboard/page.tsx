@@ -8,6 +8,7 @@ import { SignOut } from "@/features/auth/components/SignOut";
 import { EnableTwoFactor } from "@/features/auth/components/EnableTwoFactor";
 import { EmailVerification } from "@/features/auth/components/EmailVerification";
 import { ProfileImage } from "@/features/profile/components/ProfileImage";
+import { PasskeyManager } from "@/features/auth/components/PasskeyManager";
 
 export default async function Dashboard() {
     const session = await userSession();
@@ -45,6 +46,7 @@ export default async function Dashboard() {
                     }
                 />
             )}
+            <PasskeyManager />
         </div>
     );
 }

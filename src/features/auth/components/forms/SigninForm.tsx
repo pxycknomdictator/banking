@@ -31,6 +31,7 @@ export function SignInForm() {
     const router = useRouter();
     const method = useLastUsedMethod();
     const [isLoading, setIsLoading] = useState(false);
+    const [isPasskeyLoading, setIsPasskeyLoading] = useState(false);
 
     const form = useForm<SigninSchema>({
         resolver: zodResolver(signinSchema),
@@ -67,6 +68,24 @@ export function SignInForm() {
             toast.error(msg);
         } finally {
             setIsLoading(false);
+        }
+    }
+
+    async function signInWithPasskey() {
+        setIsPasskeyLoading(true);
+        try {
+            const { error } = await authClient.signIn.passkey();
+            if (error) throw new Error(error.message);
+            toast.success("Signed in successfully!");
+            router.push("/dashboard");
+        } catch (e) {
+            toast.error(
+                e instanceof Error
+                    ? e.message
+                    : "Unable to sign in with passkey."
+            );
+        } finally {
+            setIsPasskeyLoading(false);
         }
     }
 
@@ -204,11 +223,16 @@ export function SignInForm() {
                         <Button
                             type="button"
                             variant={"outline"}
-                            disabled={isLoading}
+                            disabled={isLoading || isPasskeyLoading}
+                            onClick={signInWithPasskey}
                             className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
                         >
-                            <Fingerprint data-icon="inline-start" /> Sign in
-                            with Passkey
+                            {isPasskeyLoading ? (
+                                <Loader className="size-4.5 animate-[spin_2s_linear_infinite]" />
+                            ) : (
+                                <Fingerprint data-icon="inline-start" />
+                            )}
+                            Sign in with Passkey
                         </Button>
                     </div>
                     <div className="my-4 text-center">
