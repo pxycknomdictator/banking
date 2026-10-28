@@ -30,7 +30,7 @@ export function SignOut() {
     return (
         <Button
             onClick={signOut}
-            variant={"default"}
+            variant={"destructive"}
             disabled={loading}
             className="py-6 px-5 gap-x-2 font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
         >

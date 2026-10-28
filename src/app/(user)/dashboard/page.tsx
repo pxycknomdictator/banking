@@ -25,9 +25,11 @@ export default async function Dashboard() {
 
     return (
         <div className="m-4 space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="space-y-4">
                 <h1 className="font-medium text-2xl">Dashboard page</h1>
-                <SignOut />
+                <div className="flex justify-end">
+                    <SignOut />
+                </div>
             </div>
             <ProfileImage name={session.user.name} image={session.user.image} />
             <EmailVerification
