@@ -1,7 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Fingerprint, KeyRound, Loader, Plus, ShieldCheck } from "lucide-react";
+import {
+    Fingerprint,
+    KeyRound,
+    Loader,
+    Plus,
+    ShieldCheck,
+    Trash2
+} from "lucide-react";
 import { toast } from "sonner";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
@@ -18,6 +25,7 @@ export function PasskeyManager() {
     const passkeys = authClient.useListPasskeys();
     const [name, setName] = useState("");
     const [isAdding, setIsAdding] = useState(false);
+    const [deletingId, setDeletingId] = useState<string | null>(null);
 
     async function addPasskey() {
         setIsAdding(true);
@@ -37,6 +45,32 @@ export function PasskeyManager() {
             );
         } finally {
             setIsAdding(false);
+        }
+    }
+
+    async function deletePasskey(id: string, passkeyName: string) {
+        if (
+            !window.confirm(
+                `Remove "${passkeyName}"? You will no longer be able to use it to sign in.`
+            )
+        ) {
+            return;
+        }
+
+        setDeletingId(id);
+        try {
+            const { error } = await authClient.passkey.deletePasskey({ id });
+            if (error) throw new Error(error.message);
+            await passkeys.refetch();
+            toast.success("Passkey removed.");
+        } catch (error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Unable to remove this passkey."
+            );
+        } finally {
+            setDeletingId(null);
         }
     }
 
@@ -111,7 +145,34 @@ export function PasskeyManager() {
                                         </p>
                                     </div>
                                 </div>
-                                <ShieldCheck className="size-5 shrink-0 text-emerald-500" />
+                                <div className="flex items-center gap-2">
+                                    <ShieldCheck className="size-5 shrink-0 text-emerald-500" />
+                                    <Button
+                                        type="button"
+                                        variant="ghost"
+                                        size="icon-sm"
+                                        onClick={() =>
+                                            deletePasskey(
+                                                passkey.id,
+                                                passkey.name ||
+                                                    "Unnamed passkey"
+                                            )
+                                        }
+                                        disabled={
+                                            deletingId !== null || isAdding
+                                        }
+                                        aria-label={`Remove ${
+                                            passkey.name || "unnamed passkey"
+                                        }`}
+                                        className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                                    >
+                                        {deletingId === passkey.id ? (
+                                            <Loader className="size-4 animate-spin" />
+                                        ) : (
+                                            <Trash2 className="size-4" />
+                                        )}
+                                    </Button>
+                                </div>
                             </div>
                         ))}
                     </div>
