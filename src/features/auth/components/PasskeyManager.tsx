@@ -20,12 +20,29 @@ import {
     CardTitle
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle
+} from "@/components/ui/alert-dialog";
+
+type PasskeyToDelete = {
+    id: string;
+    name: string;
+};
 
 export function PasskeyManager() {
     const passkeys = authClient.useListPasskeys();
     const [name, setName] = useState("");
     const [isAdding, setIsAdding] = useState(false);
     const [deletingId, setDeletingId] = useState<string | null>(null);
+    const [passkeyToDelete, setPasskeyToDelete] =
+        useState<PasskeyToDelete | null>(null);
 
     async function addPasskey() {
         setIsAdding(true);
@@ -48,20 +65,13 @@ export function PasskeyManager() {
         }
     }
 
-    async function deletePasskey(id: string, passkeyName: string) {
-        if (
-            !window.confirm(
-                `Remove "${passkeyName}"? You will no longer be able to use it to sign in.`
-            )
-        ) {
-            return;
-        }
-
+    async function deletePasskey(id: string) {
         setDeletingId(id);
         try {
             const { error } = await authClient.passkey.deletePasskey({ id });
             if (error) throw new Error(error.message);
             await passkeys.refetch();
+            setPasskeyToDelete(null);
             toast.success("Passkey removed.");
         } catch (error) {
             toast.error(
@@ -152,11 +162,12 @@ export function PasskeyManager() {
                                         variant="ghost"
                                         size="icon-sm"
                                         onClick={() =>
-                                            deletePasskey(
-                                                passkey.id,
-                                                passkey.name ||
+                                            setPasskeyToDelete({
+                                                id: passkey.id,
+                                                name:
+                                                    passkey.name ||
                                                     "Unnamed passkey"
-                                            )
+                                            })
                                         }
                                         disabled={
                                             deletingId !== null || isAdding
@@ -189,6 +200,52 @@ export function PasskeyManager() {
                     </div>
                 )}
             </CardContent>
+            <AlertDialog
+                open={passkeyToDelete !== null}
+                onOpenChange={(open) => {
+                    if (!open && deletingId === null) {
+                        setPasskeyToDelete(null);
+                    }
+                }}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Delete this passkey?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            You are about to remove{" "}
+                            <span className="font-medium text-foreground">
+                                &quot;{passkeyToDelete?.name}&quot;
+                            </span>
+                            . You will no longer be able to use it to sign in.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={deletingId !== null}>
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            variant="destructive"
+                            disabled={
+                                passkeyToDelete === null || deletingId !== null
+                            }
+                            onClick={() => {
+                                if (passkeyToDelete) {
+                                    void deletePasskey(passkeyToDelete.id);
+                                }
+                            }}
+                        >
+                            {deletingId ? (
+                                <Loader className="size-4 animate-spin" />
+                            ) : (
+                                <Trash2 className="size-4" />
+                            )}
+                            Delete passkey
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </Card>
     );
 }
