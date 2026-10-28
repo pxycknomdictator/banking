@@ -114,7 +114,7 @@ export function PasskeyManager() {
                         type="button"
                         onClick={addPasskey}
                         disabled={isAdding}
-                        className="py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 relative"
+                        className="py-7 px-4 font-semibold gap-x-1 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 relative"
                     >
                         {isAdding ? (
                             <Loader className="size-4 animate-spin" />
@@ -175,7 +175,7 @@ export function PasskeyManager() {
                                         aria-label={`Remove ${
                                             passkey.name || "unnamed passkey"
                                         }`}
-                                        className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                                        className="text-muted-foreground hover:bg-destructive/10 hover:text-destructive cursor-pointer"
                                     >
                                         {deletingId === passkey.id ? (
                                             <Loader className="size-4 animate-spin" />
@@ -222,27 +222,34 @@ export function PasskeyManager() {
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                        <AlertDialogCancel disabled={deletingId !== null}>
-                            Cancel
-                        </AlertDialogCancel>
-                        <AlertDialogAction
-                            variant="destructive"
-                            disabled={
-                                passkeyToDelete === null || deletingId !== null
-                            }
-                            onClick={() => {
-                                if (passkeyToDelete) {
-                                    void deletePasskey(passkeyToDelete.id);
+                        <div className="w-full grid gap-y-3 md:grid-cols-2 gap-x-3">
+                            <AlertDialogCancel
+                                disabled={deletingId !== null}
+                                className="order-2 md:order-1 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                            >
+                                Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                                variant="destructive"
+                                className="order-1 md:order-2 py-7 font-semibold gap-x-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45"
+                                disabled={
+                                    passkeyToDelete === null ||
+                                    deletingId !== null
                                 }
-                            }}
-                        >
-                            {deletingId ? (
-                                <Loader className="size-4 animate-spin" />
-                            ) : (
-                                <Trash2 className="size-4" />
-                            )}
-                            Delete passkey
-                        </AlertDialogAction>
+                                onClick={() => {
+                                    if (passkeyToDelete) {
+                                        void deletePasskey(passkeyToDelete.id);
+                                    }
+                                }}
+                            >
+                                {deletingId ? (
+                                    <Loader className="size-4 animate-spin" />
+                                ) : (
+                                    <Trash2 className="size-4" />
+                                )}
+                                Delete passkey
+                            </AlertDialogAction>
+                        </div>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
