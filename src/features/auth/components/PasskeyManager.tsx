@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { type SubmitEvent, useState } from "react";
 import {
     Fingerprint,
     KeyRound,
@@ -44,7 +44,8 @@ export function PasskeyManager() {
     const [passkeyToDelete, setPasskeyToDelete] =
         useState<PasskeyToDelete | null>(null);
 
-    async function addPasskey() {
+    async function addPasskey(event: SubmitEvent<HTMLFormElement>) {
+        event.preventDefault();
         setIsAdding(true);
         try {
             const result = await authClient.passkey.addPasskey({
@@ -101,7 +102,10 @@ export function PasskeyManager() {
                 </div>
             </CardHeader>
             <CardContent className="gap-5 pt-6">
-                <div className="flex flex-col gap-2 sm:flex-row">
+                <form
+                    onSubmit={addPasskey}
+                    className="flex flex-col gap-2 sm:flex-row"
+                >
                     <Input
                         value={name}
                         onChange={(event) => setName(event.target.value)}
@@ -111,8 +115,7 @@ export function PasskeyManager() {
                         className="py-7 pl-3"
                     />
                     <Button
-                        type="button"
-                        onClick={addPasskey}
+                        type="submit"
                         disabled={isAdding}
                         className="py-7 px-4 font-semibold gap-x-1 cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 relative"
                     >
@@ -123,7 +126,7 @@ export function PasskeyManager() {
                         )}
                         Add passkey
                     </Button>
-                </div>
+                </form>
                 {passkeys.isPending ? (
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Loader className="size-4 animate-spin" />
