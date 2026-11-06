@@ -9,10 +9,14 @@ import { EnableTwoFactor } from "@/features/auth/components/EnableTwoFactor";
 import { EmailVerification } from "@/features/auth/components/EmailVerification";
 import { ProfileImage } from "@/features/profile/components/ProfileImage";
 import { PasskeyManager } from "@/features/auth/components/PasskeyManager";
+import { ActiveSessions } from "@/features/auth/components/ActiveSessions";
 
 export default async function Dashboard() {
     const session = await userSession();
     const accounts = await auth.api.listUserAccounts({
+        headers: await headers()
+    });
+    const activeSessions = await auth.api.listSessions({
         headers: await headers()
     });
     const hasPasswordAccount = accounts.some(
@@ -49,6 +53,10 @@ export default async function Dashboard() {
                 />
             )}
             <PasskeyManager />
+            <ActiveSessions
+                sessions={activeSessions}
+                currentToken={session.session.token}
+            />
         </div>
     );
 }

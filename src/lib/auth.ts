@@ -1,4 +1,6 @@
 import { db } from "@/db";
+import { eq } from "drizzle-orm";
+import { users } from "@/db/schemas";
 import { redis } from "@lib/redis";
 import { sendEmail } from "@lib/email";
 import { passkey } from "@better-auth/passkey";
@@ -23,6 +25,26 @@ export const auth = betterAuth({
         expiresIn: 60 * 60,
         storeSessionInDatabase: true,
         preserveSessionInDatabase: false
+    },
+    databaseHooks: {
+        session: {
+            create: {
+                async after(session) {
+                    const user = await db.query.users.findFirst({
+                        where: eq(users.id, session.userId),
+                        columns: { email: true, name: true }
+                    });
+
+                    if (!user) return;
+
+                    void sendEmail({
+                        to: user.email,
+                        subject: "New sign-in to your banking account",
+                        html: `Hi ${user.name},<br/><br/>A new sign-in was detected for your banking account.<br/><br/><strong>IP address:</strong> ${session.ipAddress ?? "Unavailable"}<br/><strong>Device:</strong> ${session.userAgent ?? "Unavailable"}<br/><br/>If this was not you, sign out all devices and change your password immediately.`
+                    });
+                }
+            }
+        }
     },
     advanced: {
         useSecureCookies: process.env.NODE_ENV === "production",
