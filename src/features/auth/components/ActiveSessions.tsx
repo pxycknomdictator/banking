@@ -105,6 +105,26 @@ export function ActiveSessions({
         }
     }
 
+    async function revokeOtherSessions() {
+        setLoading("other");
+        try {
+            const { error } = await authClient.revokeOtherSessions();
+            if (error) throw new Error(error.message);
+            setSessions((current) =>
+                current.filter((session) => session.token === currentToken)
+            );
+            toast.success("Other sessions signed out.");
+        } catch (error) {
+            toast.error(
+                error instanceof Error
+                    ? error.message
+                    : "Could not sign out other devices."
+            );
+        } finally {
+            setLoading(null);
+        }
+    }
+
     return (
         <Card className="max-w-2xl border-0 shadow-lg shadow-black/5 ring-1 ring-black/5 dark:shadow-black/20 dark:ring-white/10">
             <CardHeader className="border-b">
@@ -169,19 +189,34 @@ export function ActiveSessions({
                         );
                     })}
                 </div>
-                <Button
-                    variant="destructive"
-                    onClick={revokeAllSessions}
-                    disabled={loading !== null}
-                    className="py-7 px-5 gap-x-2 font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto sm:self-end"
-                >
-                    {loading === "all" ? (
-                        <Loader2 className="animate-spin" />
-                    ) : (
-                        <LogOut />
-                    )}
-                    Sign out all devices
-                </Button>
+                <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+                    <Button
+                        variant="outline"
+                        onClick={revokeOtherSessions}
+                        disabled={loading !== null}
+                        className="w-full py-7 px-5 gap-x-2 font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto"
+                    >
+                        {loading === "other" ? (
+                            <Loader2 className="animate-spin" />
+                        ) : (
+                            <LogOut />
+                        )}
+                        Sign out other devices
+                    </Button>
+                    <Button
+                        variant="destructive"
+                        onClick={revokeAllSessions}
+                        disabled={loading !== null}
+                        className="w-full py-7 px-5 gap-x-2 font-semibold cursor-pointer disabled:cursor-not-allowed disabled:opacity-45 sm:w-auto"
+                    >
+                        {loading === "all" ? (
+                            <Loader2 className="animate-spin" />
+                        ) : (
+                            <LogOut />
+                        )}
+                        Sign out all devices
+                    </Button>
+                </div>
             </CardContent>
             <AlertDialog
                 open={sessionToRevoke !== null}
