@@ -1,9 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { Loader2, LogOut, Monitor } from "lucide-react";
+import {
+    Laptop,
+    Loader2,
+    LogOut,
+    Monitor,
+    Smartphone,
+    Tablet
+} from "lucide-react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { UAParser } from "ua-parser-js";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,10 +45,17 @@ type ActiveSessionsProps = {
     currentToken: string;
 };
 
-function sessionLabel(userAgent: string | null | undefined) {
-    if (!userAgent) return "Unknown device";
-    if (/mobile|android|iphone|ipad/i.test(userAgent)) return "Mobile device";
-    return "Desktop browser";
+function getSessionDetails(userAgent: string | null | undefined) {
+    const parsed = new UAParser(userAgent ?? "").getResult();
+    const isTablet = parsed.device.type === "tablet";
+    const isMobile = parsed.device.type === "mobile";
+
+    return {
+        device: isTablet ? "tablet" : isMobile ? "mobile" : "desktop",
+        os: parsed.os.name ?? "Unknown OS",
+        browser: parsed.browser.name ?? "Unknown browser",
+        Icon: isTablet ? Tablet : isMobile ? Smartphone : Laptop
+    };
 }
 
 export function ActiveSessions({
@@ -109,16 +124,18 @@ export function ActiveSessions({
                 <div className="grid gap-3">
                     {sessions.map((session) => {
                         const isCurrent = session.token === currentToken;
+                        const details = getSessionDetails(session.userAgent);
+                        const DeviceIcon = details.Icon;
                         return (
                             <div
                                 key={session.token}
                                 className="flex flex-col gap-4 rounded-xl border bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between"
                             >
                                 <div className="flex min-w-0 items-center gap-3">
-                                    <Monitor className="size-5 shrink-0 text-muted-foreground" />
+                                    <DeviceIcon className="size-5 shrink-0 text-muted-foreground" />
                                     <div className="min-w-0">
                                         <p className="font-medium">
-                                            {sessionLabel(session.userAgent)}
+                                            {`${details.browser} on ${details.os}`}
                                             {isCurrent ? " (This device)" : ""}
                                         </p>
                                         <p className="truncate text-sm text-muted-foreground">
