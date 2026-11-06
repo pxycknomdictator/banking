@@ -81,6 +81,7 @@ export function SocialProviders() {
                             alt=""
                             width={24}
                             height={24}
+                            loading="eager"
                             className="h-6 w-6"
                         />
                     )}
