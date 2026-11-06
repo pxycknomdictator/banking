@@ -190,11 +190,11 @@ export function ActiveSessions({
                 }}
             >
                 <AlertDialogContent>
-                    <AlertDialogHeader>
+                    <AlertDialogHeader className="w-full place-items-start text-left">
                         <AlertDialogTitle>
                             Log out this session?
                         </AlertDialogTitle>
-                        <AlertDialogDescription>
+                        <AlertDialogDescription className="w-full max-w-none text-left text-wrap">
                             This device will be signed out of your banking
                             account. You can sign in again later.
                         </AlertDialogDescription>
