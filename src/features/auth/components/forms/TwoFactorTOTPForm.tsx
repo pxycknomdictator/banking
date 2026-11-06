@@ -163,7 +163,7 @@ export function TwoFactorTOTPForm() {
                         )}
                         Verify code
                     </Button>
-                    <div className="my-4 text-center">
+                    <div className="my-6 text-center">
                         <span className="font-normal">
                             Don&apos;t have access to authentication?
                         </span>{" "}

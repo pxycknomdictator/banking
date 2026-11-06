@@ -200,7 +200,7 @@ export function SignUpForm() {
                             Sign up
                         </Button>
                     </div>
-                    <div className="my-4 text-center">
+                    <div className="my-6 text-center">
                         <span className="font-normal">
                             Already have an account?
                         </span>{" "}

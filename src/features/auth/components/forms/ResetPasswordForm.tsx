@@ -143,7 +143,7 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
                         )}
                         Reset password
                     </Button>
-                    <div className="mt-4 text-center">
+                    <div className="mt-6 text-center">
                         <Link
                             href="/sign-in"
                             className="inline-flex items-center gap-2 font-medium hover:underline"

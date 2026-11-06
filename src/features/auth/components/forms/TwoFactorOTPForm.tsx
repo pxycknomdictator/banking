@@ -196,7 +196,7 @@ export function TwoFactorOTPForm() {
                         )}
                         Verify code
                     </Button>
-                    <div className="my-4 text-center">
+                    <div className="my-6 text-center">
                         <span className="font-normal">
                             Didn&apos;t receive the code?
                         </span>{" "}

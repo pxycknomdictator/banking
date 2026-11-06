@@ -157,7 +157,7 @@ export function RecoveryCodeForm() {
                         )}
                         Verify code
                     </Button>
-                    <div className="my-4 text-center">
+                    <div className="my-6 text-center">
                         <span className="font-normal">
                             Have access to an authenticator?
                         </span>{" "}

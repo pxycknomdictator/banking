@@ -235,7 +235,7 @@ export function SignInForm() {
                             Sign in with Passkey
                         </Button>
                     </div>
-                    <div className="my-4 text-center">
+                    <div className="my-6 text-center">
                         <span className="font-normal">
                             Don&apos;t have an account?
                         </span>{" "}
